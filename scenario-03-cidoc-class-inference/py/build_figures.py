@@ -76,12 +76,28 @@ OPERATORS = {
     "GeometricMean": lambda w: prod(w) ** (1.0 / len(w)),
     "Hamacher (g=2)": lambda w: reduce(lambda a, b: _hamacher_pair(a, b, 2.0), w),
 }
+# Real amt:Logic instance names, from amt.ttl - not a uniform "<Name>Logic"
+# pattern (EinsteinProduct/HamacherProduct break that), so this is looked up
+# rather than string-built.
+AMT_LOGIC_IRI = {
+    "Goedel": "GoedelLogic",
+    "Product": "ProductLogic",
+    "Lukasiewicz": "LukasiewiczLogic",
+    "Einstein": "EinsteinProduct",
+    "GeometricMean": "GeometricMean",
+    "Hamacher (g=2)": "HamacherProduct",
+}
 
-# AMT's own worked example (examples/skos-mapping-example.ttl) recommends
-# Einstein product specifically for 3-step chains ("gentler than
-# ProductLogic for n=3, keeping more signal") - used as the headline number
-# in figures 1, 2 and 4. Figure 3 shows the full spread across all six.
-HEADLINE_OPERATOR = "Einstein"
+# Corrected 2026-09-13 (after scenario 6 checked amt-engine's actual
+# ontology/README.md): the general, documented default for 3-ary chains is
+# Goedel, not Einstein. An earlier version of this file said Einstein was
+# "AMT's own recommendation for 3-step chains", based on a code comment in
+# examples/skos-mapping-example.ttl that justifies Einstein over Product
+# for one specific heterogeneous chain - that comment never claimed Einstein
+# over Goedel in general. Goedel is used as the headline operator below;
+# Einstein remains visible in figure 3's full six-operator comparison as the
+# documented alternative for cases like that one.
+HEADLINE_OPERATOR = "Goedel"
 
 
 def load_tsv(path: Path) -> list[dict]:
@@ -183,8 +199,7 @@ def build_pipeline(canvas) -> None:
                 Colours.PROP_META["text"], font_size=13, weight="600")
     for i, line in enumerate([
         "antecedents = (closeMatch,", "exactMatch, hasCRMClass)",
-        "consequent = hasCRMClass", f"logic = {HEADLINE_OPERATOR}Product"
-        if HEADLINE_OPERATOR == "Einstein" else f"logic = {HEADLINE_OPERATOR}",
+        "consequent = hasCRMClass", f"logic = {AMT_LOGIC_IRI[HEADLINE_OPERATOR]}",
     ]):
         canvas.text(axiom_x + axiom_w / 2, axiom_y + 52 + i * 18, line,
                     "#0f172a", font_size=10.5)
@@ -244,10 +259,13 @@ def build_operator_comparison(canvas) -> None:
                     font_size=10.5, weight="600")
 
     canvas.text(x0 + w / 2, y0 + h + 56,
-                f"{HEADLINE_OPERATOR} highlighted: AMT's own worked example "
-                "recommends it for 3-step chains. Einstein and Hamacher "
-                "(g=2) coincide exactly here - a real mathematical identity, "
-                "not a rounding artefact.", "#475569", font_size=11)
+                f"{HEADLINE_OPERATOR} highlighted: amt-engine's ontology "
+                "README gives it as the general default for 3-ary chains "
+                "(Einstein/GeometricMean as alternatives). Einstein and",
+                "#475569", font_size=11)
+    canvas.text(x0 + w / 2, y0 + h + 74,
+                "Hamacher (g=2) coincide exactly here - a real mathematical "
+                "identity, not a rounding artefact.", "#475569", font_size=11)
 
 
 # ---------------------------------------------------------------------------
@@ -297,8 +315,8 @@ def build_fanin(canvas) -> None:
 
     canvas.text(660, 500,
                 f"All three inherit the same class via amt:RoleChainAxiom, "
-                f"each with w = {HEADLINE_DEGREE:.3f} ({HEADLINE_OPERATOR} "
-                "product) - one axiom, applied once, covers every concept "
+                f"each with w = {HEADLINE_DEGREE:.3f} ({HEADLINE_OPERATOR}) "
+                "- one axiom, applied once, covers every concept "
                 "that ever closeMatches this anchor.", "#475569",
                 font_size=11.5)
     canvas.text(660, 522,

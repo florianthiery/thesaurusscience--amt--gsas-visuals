@@ -255,6 +255,7 @@ Eigenschaften, die das fertige Repo erfüllen muss:
 | Szenario-6-narrowMatch-Gewicht | GSAS-`relatedMatch`-Degree (0.4947) als begründete Analogie, da GSAS `narrowMatch` nicht kalibriert | 2026-09-13 |
 | Szenario-6-Operatoren je Arität | Aus `amt-engine`s Ontology-README übernommen: Gödel (n=2,3 Default), GeometricMean (n=4 Default) — nicht Einstein wie in Szenario 3 zu allgemein behauptet | 2026-09-13 |
 | Szenario-6-Bilder | 8 (3× Ketten-Diagramm im n-ary-Stil, Operator-nach-Arität, Product-Dämpfung [synthetisch], SKOS-Vorher/Nachher, binär-vs-n-är, GSAS-Abdeckungslücke) | 2026-09-13 |
+| Szenario-3-Korrektur | Headline-Operator von Einstein auf Gödel geändert (allgemeiner 3-är-Default laut `amt-engine`-Ontology-README); alle 5 Abbildungen + README neu | 2026-09-13 |
 
 ### A5 Was in welchem Chat hochgeladen wird
 
@@ -357,17 +358,22 @@ kann mit, ist aber klein genug, dass es keine Rolle spielt).
 - **Substanz**: fünf Abbildungen (auf Wunsch von ursprünglich 2 auf 5
   erweitert) —
   1. `scenario-03-network`: die Kernkette als Netzwerk, inkl. abgeleiteter
-     gestrichelter Kante (Einstein Product, w=0.839).
+     gestrichelter Kante (Gödel, w=0.900).
   2. `scenario-03-pipeline`: drei asserted Quads → `RoleChainAxiom` →
      inferred Quad.
   3. `scenario-03-operator-comparison`: alle 6 AMT-Operatoren im Vergleich,
-     Einstein hervorgehoben.
+     Gödel hervorgehoben.
   4. `scenario-03-fanin`: drei echte Konzepte, ein Anker, eine Klasse "at
      scale".
   5. `scenario-03-before-after`: Vorher/Nachher-Zusammenfassung.
 - **Abnahme**: `python main.py --only scenario-03` erzeugt alle fünf
   Abbildungen; zweimaliger Lauf ist byte-identisch (`cmp`); Konsolen-Ausgabe
   bestätigt alle 6 Operator-Werte.
+- **Korrektur 2026-09-13** (nach Bau von Szenario 6): Headline-Operator von
+  Einstein auf Gödel umgestellt — `amt-engine`s Ontology-README nennt Gödel
+  als allgemeinen 3-är-Default, Einstein war nur für eine bestimmte
+  heterogene Kette im Beispielfile begründet, nicht allgemein. Alle 5
+  Abbildungen neu gebaut und erneut byte-identisch verifiziert.
 - **Hinweis**: wie S1/S2 ein erster Entwurf zur Vorlage an Lasse Mempel.
 
 ### S4 — Neuro-symbolischer Recommender / Ausblick (erledigt 2026-09-13)
@@ -460,11 +466,10 @@ hängt von Lasses Feedback ab.
   verwendet.
 - ~~Beispielkonzepte für Szenario 5 noch nicht ausgewählt.~~ Erledigt
   (s. A1/A4): dieselbe echte Kette wie Szenario 3 wiederverwendet.
-- **Offen**: Szenario 3 nennt Einstein Product noch als "AMT-Empfehlung für
-  3er-Ketten" — laut Szenario 6/A1 ist das zu allgemein (Default ist
-  Gödel). Szenario 3 selbst wurde dafür noch nicht korrigiert; auf Wunsch
-  nachholbar (kleiner Patch: README-Formulierung anpassen, Abbildung 3
-  ggf. Gödel statt Einstein hervorheben).
+- ~~Szenario 3 nennt Einstein Product noch als "AMT-Empfehlung für
+  3er-Ketten".~~ Erledigt 2026-09-13: Headline-Operator auf Gödel
+  umgestellt (alle 5 Abbildungen neu gebaut, byte-identisch verifiziert),
+  README korrigiert und Korrekturhinweis dort dokumentiert.
 - GSAS deckt `broadMatch`/`narrowMatch` nicht ab (s. Szenario 6). Eine
   echte GSAS-Erweiterung dafür existiert nicht; Szenario 6 nutzt eine
   begründete Analogie statt eines Werts.

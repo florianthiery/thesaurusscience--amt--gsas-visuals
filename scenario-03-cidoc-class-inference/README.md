@@ -87,13 +87,23 @@ into a chain that AMT composes.
   (`skos:closeMatch`, `skos:exactMatch`, `ex:hasCRMClass`) and
   `amt:consequent ex:hasCRMClass` - propagating class membership across two
   real mapping edges and one added assertion in a single declarative rule.
-- **A concrete operator recommendation, taken from AMT's own example file**:
-  `amt-engine/examples/skos-mapping-example.ttl` recommends Einstein
-  product specifically for 3-step chains ("gentler than ProductLogic for
-  n=3, keeping more signal"). This scenario follows that recommendation
-  (`img/scenario-03-operator-comparison` shows why: Einstein sits between
-  the conservative Gödel minimum and the more punishing Product/
-  Lukasiewicz values).
+- **A concrete operator recommendation, taken from `amt-engine`'s ontology
+  README** (`ontology/README.md`, not the example file - see the correction
+  below): Gödel is the documented default for 3-ary chains, with Einstein
+  product and Geometric Mean as alternatives. This scenario uses Gödel
+  (`img/scenario-03-operator-comparison` shows the full spread: Gödel's
+  minimum sits below Geometric Mean but above the more punishing
+  Product/Łukasiewicz values).
+- **Correction, made 2026-09-13 (after building scenario 6)**: an earlier
+  version of this README described Einstein product as "AMT's own
+  recommendation for 3-step chains", based on a code comment in
+  `amt-engine/examples/skos-mapping-example.ttl` that justifies Einstein
+  over *Product* for one specific heterogeneous chain ("gentler than
+  ProductLogic for n=3, keeping more signal"). That comment never claimed
+  Einstein over *Gödel* in general - checking the actual ontology README
+  showed Gödel is the general default. The figures now use Gödel
+  throughout; Einstein remains visible in the six-operator comparison as
+  the documented alternative for cases like the example file's.
 - **Scale, for free**: the same axiom, defined once, applies to every
   concept that closeMatches the anchor - demonstrated with three real
   concepts in `img/scenario-03-fanin`, not just the one worked example in
@@ -103,13 +113,15 @@ into a chain that AMT composes.
   `(xy)/(2-(x+y-xy))` form) - verified numerically here (`0.839076` for
   both, to six decimals), not merely close. Copied from `amt/logic.py`'s
   actual pairwise fold implementations, not re-derived independently.
+  (Visible in the operator-comparison figure even though Gödel, not
+  Einstein, is this scenario's headline operator.)
 
 ## Figures
 
 1. **`img/scenario-03-network.svg`/`.png`** - the core chain: three real
    concept ovals connected by the two real mapping edges, one illustrative
    `hasCRMClass` edge into an orange CIDOC-class box, and the inferred
-   dashed edge (Einstein product, `w = 0.839`) running directly from
+   dashed edge (Gödel, `w = 0.900`) running directly from
    "Artefact" to the class.
 2. **`img/scenario-03-pipeline.svg`/`.png`** - the RDF/AMT view: three
    asserted quads feeding into one `amt:RoleChainAxiom` box, producing one
@@ -117,7 +129,7 @@ into a chain that AMT composes.
 3. **`img/scenario-03-operator-comparison.svg`/`.png`** - the same 3-link
    chain under all six AMT operators (Gödel 0.900, Product 0.844,
    Łukasiewicz 0.838, Einstein 0.839, Geometric Mean 0.945, Hamacher γ=2
-   0.839), with Einstein highlighted as AMT's own documented choice for
+   0.839), with Gödel highlighted as `amt-engine`'s documented default for
    this chain length.
 4. **`img/scenario-03-fanin.svg`/`.png`** - three real DAI concepts fanning
    into the same anchor, all inheriting the same illustrative CIDOC class
@@ -148,7 +160,7 @@ into a chain that AMT composes.
    ex:RCA_crmClassPropagation a amt:RoleChainAxiom ;
        amt:antecedents ( skos:closeMatch skos:exactMatch ex:hasCRMClass ) ;
        amt:consequent  ex:hasCRMClass ;
-       amt:logic       amt:EinsteinProduct .
+       amt:logic       amt:GoedelLogic .
    ```
 
 4. **Run `amt-engine`** (`amt scenario-03.ttl --reason --export-ttl
