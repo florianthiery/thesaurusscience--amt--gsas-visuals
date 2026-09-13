@@ -1,0 +1,14 @@
+#curie_map:
+#  skos: http://www.w3.org/2004/02/skos/core#
+#  semapv: https://w3id.org/semapv/vocab/
+#  aat: http://vocab.getty.edu/page/aat/
+#  oeai-materials: https://vocabs.acdh.oeaw.ac.at/oeai-materials/
+#  wnk: http://lvr.vocnet.org/wnk/
+#mapping_set_title: Two-row excerpt for the thesaurusscience--amt--gsas-visuals scenario-01 example
+#mapping_set_description: Two rows manually excerpted, unchanged, from Lasse Mempel's thesaurusscience repository (https://github.com/LasseMempel/thesaurusscience) for illustration only. Row 1 is from Mappings/dariah_vocabs__https_vocabs_acdh_oeaw_ac_at_oeai_materials__https_vocabs_acdh_oeaw_ac_at_oeai_materials.sssom.tsv. Row 2 is from Mappings/wortnetz__http_lvr_vocnet_org_wnk__unknown_target_scheme.sssom.tsv. Both source files record only the direction shown here; no inverse row exists in the source corpus - this is the gap scenario-01 closes with an AMT amt:InverseAxiom.
+#license: https://creativecommons.org/licenses/by/4.0/ (as declared in the source files; unchanged here)
+#creator_label: Lasse Mempel (original mappings); excerpted by Florian Thiery
+#comment: mapping_justification for both rows is semapv:UnspecifiedMatching in the source, i.e. the original matching procedure is not recorded. amt:weight values used in the figures (1.0 for the exactMatch row, 0.6 for the relatedMatch row) are illustrative placeholders added for this repository, NOT present in the SSSOM source - the source files carry no confidence column. This is called out explicitly in the figures and must not be read back into thesaurusscience.
+subject_id	subject_label	predicate_id	object_id	object_label	mapping_justification
+aat:300010439		skos:exactMatch	oeai-materials:concept23906	clay	semapv:UnspecifiedMatching
+wnk:wk000147	summerhouse	skos:relatedMatch	aat:300007698		semapv:UnspecifiedMatching

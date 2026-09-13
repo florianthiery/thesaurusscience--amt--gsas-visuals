@@ -1,0 +1,4 @@
+# cairosvg rasterises the hand-built SVG figures to PNG (py/viz_utils.py).
+# No matplotlib/graphviz dependency - every diagram is plain SVG generated
+# directly by the scenario scripts.
+cairosvg>=2.7,<3
