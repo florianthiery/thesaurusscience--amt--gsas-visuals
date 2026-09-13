@@ -13,7 +13,7 @@ Ende zurückgeschrieben. Teil A gilt immer, Teil B/C sind die Schritte
 | `LasseMempel/thesaurusscience` | Quelle der echten SSSOM-Mappings | extern, read-only Referenz |
 | `n4o-rse/amt-engine` | Fuzzy-Logic-RDF-Reasoning-Engine | extern, read-only Referenz |
 | `Research-Squirrel-Engineers/GSAS` | Gradual Semantic Alignment for SKOS | extern, read-only Referenz |
-| `florianthiery/thesaurusscience--amt--gsas-visuals` | dieses Repo | neu, S0/S1/S2 erledigt |
+| `florianthiery/thesaurusscience--amt--gsas-visuals` | dieses Repo | neu, S0/S1/S2/S3 erledigt |
 
 **Befunde** (durch tatsächliches Klonen und Lesen der drei Quell-Repos
 geprüft, nicht aus dem Gedächtnis):
@@ -80,6 +80,36 @@ geprüft, nicht aus dem Gedächtnis):
   keinen Internetzugang zu HuggingFace. Der Cosinus-Wert in Szenario 2
   (0.78, Paar "clay"/"terracotta") ist daher ein klar gekennzeichneter
   Platzhalter, kein Messwert (geprüft/entschieden 2026-09-13).
+- **Korrektur zu Szenario 3, AMT-Mechanismus**: `amt:instanceOf` ist rein
+  intern (Concept-Typisierung/Validierung, `amt/core.py`), nicht vom Typ
+  `amt:Role` und daher **nicht** kettenfähig in `amt:RoleChainAxiom`.
+  `amt:SubsumptionAxiom` betrifft Rollen-zu-Rollen-Hierarchien, nicht
+  Klassenvererbung über eine Mapping-Kante. Der richtige Mechanismus:
+  CIDOC-Klassenzugehörigkeit als **eigene Rolle** modellieren
+  (`ex:hasCRMClass`, nicht `amt:instanceOf`), dann ganz normal per
+  `amt:RoleChainAxiom` verketten — derselbe Mechanismus wie in Szenario 1/2,
+  nur mit einer selbstdefinierten Rolle (geprüft 2026-09-13, `amt/reasoning.py`,
+  `amt/core.py`, `amt-shapes.ttl`).
+- **Keine CIDOC-CRM-Typisierung im Corpus**: `Backbone Thesaurus.ttl` und
+  beide Pactols-RDF-Dumps enthalten keinen einzigen `crm:`-Namespace, keine
+  einzige `crm:`-Aussage (direkt geprüft). Lasses "CIDOC-orientiert" bezieht
+  sich auf die konzeptionelle Anlehnung in Scope Notes (die CRMgeo als Text
+  erwähnen), nicht auf maschinenlesbare Typisierung. Die in Szenario 3
+  verwendete CIDOC-Klasse ist daher eine begründete, aber hinzugefügte
+  Annotation, kein Fund (geprüft 2026-09-13).
+- **Echte mehrstufige Kette für Szenario 3 gefunden**: `dai:_fac3092f`
+  "Artefact" —closeMatch→ `dai:_ad8ec5e3` "goods and commodities" (real,
+  `Mappings/dai__..._scheme.sssom.tsv` Zeile 6111) —exactMatch→
+  `bbt:Concept_000017` "mobile objects" (real, sowohl als eigene SSSOM-Zeile
+  als auch nativ im Backbone-Thesaurus-Dump selbst). Drei weitere reale
+  Konzepte (`dai:_4377`, `dai:_771e668b`) closeMatchen denselben Anker,
+  genutzt fürs Fan-in-Bild (geprüft 2026-09-13).
+- **AMT-Logikoperatoren direkt aus `amt/logic.py` kopiert** (nicht
+  nachgerechnet), inkl. der exakten Pairwise-Fold-Implementierung. Befund:
+  Einstein Product und Hamacher Product bei γ=2 sind für die drei Gewichte
+  [0.9381, 1.0, 0.90] **exakt identisch** (0.839076 beide) — eine echte
+  mathematische Koinzidenz (Hamacher bei γ=2 ≡ Einstein per Definition),
+  keine Rundung (geprüft 2026-09-13).
 
 ### A2 Zielbild
 
@@ -141,6 +171,12 @@ Eigenschaften, die das fertige Repo erfüllen muss:
 | Szenario-2-Cosinus-Wert | 0.78, illustrativer Platzhalter (keine echten Embeddings verfügbar, kein Internetzugang zu HuggingFace in der Sandbox) | 2026-09-13 |
 | Szenario-2-Bilder | 3 wie vorgeschlagen: Kalibrierungskurven-Vergleich, Pipeline (diskrete Bindung), Balkendiagramm (gleicher Input, 3 Modelle) | 2026-09-13, bestätigt und gebaut |
 | Zweck von Szenario 2 (und generell) | Erster Entwurf zur Vorlage an Lasse Mempel — nicht final, seine Ideen/Änderungswünsche werden danach eingearbeitet | 2026-09-13 |
+| Szenario-3-Mechanismus | `amt:RoleChainAxiom` mit selbstdefinierter Rolle `ex:hasCRMClass` (nicht `amt:instanceOf`, nicht `SubsumptionAxiom`) | 2026-09-13 |
+| Szenario-3-Beispielkette | `dai:_fac3092f` "Artefact" –closeMatch→ `dai:_ad8ec5e3` "goods and commodities" –exactMatch→ `bbt:Concept_000017` "mobile objects" –hasCRMClass(illustrativ)→ `crm:E22_Human-Made_Object` | 2026-09-13 |
+| Szenario-3-Gewichte | closeMatch/exactMatch = echte GSAS-Minimal-Degrees (0.9381/1.0, wiederverwendet aus Szenario 2); hasCRMClass = 0.90, illustrativ | 2026-09-13 |
+| Szenario-3-Logikoperator | Einstein Product (AMT-eigene Empfehlung für 3er-Ketten laut `skos-mapping-example.ttl`); alle 6 Operatoren zum Vergleich gezeigt | 2026-09-13 |
+| Szenario-3-Ordnername | `scenario-03-cidoc-class-inference` (umbenannt von der ursprünglich skizzierten „…-subsumption", passend zur Korrektur) | 2026-09-13 |
+| Szenario-3-Bilder | 5 (Netzwerk, Pipeline, Operator-Vergleich, Fan-in, Vorher/Nachher) — auf Wunsch erweitert von ursprünglich 2 | 2026-09-13 |
 
 ### A5 Was in welchem Chat hochgeladen wird
 
@@ -156,7 +192,7 @@ kann mit, ist aber klein genug, dass es keine Rolle spielt).
 | S0 | Repo-Skelett + Entscheidungen | erledigt 2026-09-13 |
 | S1 | Symmetrische/transitive Graderweiterung (`amt:InverseAxiom`) | erledigt 2026-09-13 |
 | S2 | GSAS als Kalibrierungsschicht (Embedding → Degree of Connection) | erledigt 2026-09-13 |
-| S3 | CIDOC-CRM-Klassenschluss über Backbone-Thesaurus/Pactols | geplant |
+| S3 | CIDOC-CRM-Klassenschluss über Backbone-Thesaurus/Pactols | erledigt 2026-09-13 |
 | S4 | Neuro-symbolischer Recommender (Ausblick) | geplant |
 | S5 | Kleiner Test: Embedding-Distanzen direkt in AMT | geplant |
 
@@ -218,14 +254,38 @@ kann mit, ist aber klein genug, dass es keine Rolle spielt).
   bestätigt die berechneten Werte.
 - **Hinweis**: erster Entwurf zur Vorlage an Lasse Mempel, nicht final.
 
-### S3–S5 — noch nicht im Detail geplant
+### S3 — CIDOC-CRM-Klassenschluss (erledigt 2026-09-13)
+
+- **Ziel**: Lasses Beobachtung (Backbone/Pactols sind CIDOC-orientiert)
+  konkret als AMT-Rollenkette umsetzen, nachdem die ursprüngliche
+  "Subsumption"-Skizze korrigiert wurde (s. A1).
+- **Uploads/Daten**: `data/example_chain.tsv` (echte 2-Hop-Kette
+  Artefact→goods and commodities→mobile objects, plus illustrative
+  `hasCRMClass`-Annotation); `data/fanin_concepts.tsv` (3 weitere echte
+  Konzepte, gleicher Anker).
+- **Substanz**: fünf Abbildungen (auf Wunsch von ursprünglich 2 auf 5
+  erweitert) —
+  1. `scenario-03-network`: die Kernkette als Netzwerk, inkl. abgeleiteter
+     gestrichelter Kante (Einstein Product, w=0.839).
+  2. `scenario-03-pipeline`: drei asserted Quads → `RoleChainAxiom` →
+     inferred Quad.
+  3. `scenario-03-operator-comparison`: alle 6 AMT-Operatoren im Vergleich,
+     Einstein hervorgehoben.
+  4. `scenario-03-fanin`: drei echte Konzepte, ein Anker, eine Klasse "at
+     scale".
+  5. `scenario-03-before-after`: Vorher/Nachher-Zusammenfassung.
+- **Abnahme**: `python main.py --only scenario-03` erzeugt alle fünf
+  Abbildungen; zweimaliger Lauf ist byte-identisch (`cmp`); Konsolen-Ausgabe
+  bestätigt alle 6 Operator-Werte.
+- **Hinweis**: wie S1/S2 ein erster Entwurf zur Vorlage an Lasse Mempel.
+
+### S4–S5 — noch nicht im Detail geplant
 
 Wird zu Beginn des jeweiligen Chats besprochen: Beispieldaten aus
 `thesaurusscience` auswählen, Anzahl und Art der Abbildungen bestätigen, dann
 bauen. Grobe Richtung siehe die Szenario-Beschreibungen im Chat vom
-2026-09-13 (Szenario 2: GSAS-Kalibrierungskurven + Pipeline; Szenario 3:
-CIDOC-CRM-Netzwerk + Flowchart; Szenario 4: Architektur- + Ranking-Diagramm;
-Szenario 5: Ketten- + Operator-Balkendiagramm).
+2026-09-13 (Szenario 4: Architektur- + Ranking-Diagramm; Szenario 5:
+Ketten- + Operator-Balkendiagramm).
 
 ## Teil D — Offene Punkte
 
@@ -234,11 +294,12 @@ Szenario 5: Ketten- + Operator-Balkendiagramm).
   da weder Lasse noch diese Sandbox echte Embeddings zur Verfügung haben.
 - `main.py --strict` ist noch nicht implementiert, da noch keine Schritte
   Warnungen erzeugen, die es abfangen könnte — nachholen, sobald relevant.
-- Konkrete Beispielkonzepte für Szenario 3 (CIDOC-CRM-Anker in Backbone
-  Thesaurus/Pactols) und Szenario 4/5 noch nicht aus `thesaurusscience`
+- ~~Konkrete Beispielkonzepte für Szenario 3 ... noch nicht ausgewählt.~~
+  Erledigt (s. A1/A4): echte Kette gefunden und verwendet.
+- Beispielkonzepte für Szenario 4/5 noch nicht aus `thesaurusscience`
   ausgewählt.
 - Zenodo-DOI für dieses Repo noch nicht vergeben (`CITATION.cff` hat keinen
   `doi`-Eintrag).
-- Szenario 1 und 2 sind erste Entwürfe zur Vorlage an Lasse Mempel — sobald
-  er Feedback/Ideen dazu hat, ggf. Anpassungen an Beispielen, Modellwahl
-  oder Abbildungen nötig; noch nicht eingearbeitet.
+- Szenario 1, 2 und 3 sind erste Entwürfe zur Vorlage an Lasse Mempel —
+  sobald er Feedback/Ideen dazu hat, ggf. Anpassungen an Beispielen,
+  Modellwahl oder Abbildungen nötig; noch nicht eingearbeitet.

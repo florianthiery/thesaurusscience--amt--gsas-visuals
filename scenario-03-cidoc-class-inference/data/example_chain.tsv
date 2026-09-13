@@ -1,0 +1,9 @@
+#source: two real, unchanged rows from https://github.com/LasseMempel/thesaurusscience (CC BY 4.0, as declared in the source files):
+#  row 1: Mappings/dai__http_thesauri_dainst_org_scheme__http_thesauri_dainst_org_scheme.sssom.tsv, line 6111
+#  row 2: Mappings/dariah_vocabs__http_thesauri_dainst_org_scheme__unknown_target_scheme.sssom.tsv, line 229 (same edge is also embedded directly inside Dariah Vocabs/Backbone Thesaurus.ttl's own skos:exactMatch statement for bbt:Concept/000017)
+#comment: "goods and commodities" (DAI) and "mobile objects" (Backbone Thesaurus, bbt:Concept/000017) are real, already-connected concepts. The third row (hasCRMClass) is NOT present in thesaurusscience or in the Backbone Thesaurus dump - neither dump contains any crm: RDF typing at all (checked directly, 2026-09-13). It is an ILLUSTRATIVE annotation added for this scenario, motivated by bbt:Concept/000017's own real label ("mobile objects", under the "material things" facet) but not sourced from the data.
+#comment_2: weight_closeMatch and weight_exactMatch are GSAS's own real minimal-model degrees for skos:closeMatch/skos:exactMatch (see scenario-02-gsas-calibration/data/gsas_reference_values.tsv) - reused here, not re-invented. weight_hasCRMClass (0.90) is an illustrative confidence for the added class annotation itself, deliberately set below 1.0 to reflect that it is an inference-workflow addition, not a documented crm: fact.
+subject_id	subject_label	predicate_id	object_id	object_label	weight	weight_source
+dai:_fac3092f	Artefact	skos:closeMatch	dai:_ad8ec5e3	goods and commodities	0.9380796757830466	GSAS minimal model, skos:closeMatch
+dai:_ad8ec5e3	goods and commodities	skos:exactMatch	bbt:Concept_000017	mobile objects	1.0	GSAS minimal model, skos:exactMatch
+bbt:Concept_000017	mobile objects	ex:hasCRMClass	crm:E22_Human-Made_Object		0.90	ILLUSTRATIVE - not in source data

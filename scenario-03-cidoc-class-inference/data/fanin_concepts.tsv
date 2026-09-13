@@ -1,0 +1,7 @@
+#source: three real, unchanged rows from Mappings/dai__http_thesauri_dainst_org_scheme__http_thesauri_dainst_org_scheme.sssom.tsv in https://github.com/LasseMempel/thesaurusscience (CC BY 4.0)
+#comment: all three concepts are real DAI World Thesaurus concepts that skos:closeMatch the same anchor (dai:_ad8ec5e3 "goods and commodities" = bbt:Concept_000017 "mobile objects"). weight is GSAS's real minimal-model closeMatch degree, applied identically to all three here for simplicity - in a real pipeline each row would likely carry its own embedding-calibrated weight (see scenario-02).
+#comment_2: dai:_771e668b has no English label in the DAI export used here; shown as-is (German) rather than inventing a translation.
+subject_id	subject_label	predicate_id	object_id	weight
+dai:_fac3092f	Artefact	skos:closeMatch	dai:_ad8ec5e3	0.9380796757830466
+dai:_4377	finds and collected material	skos:closeMatch	dai:_ad8ec5e3	0.9380796757830466
+dai:_771e668b	Objektgattungen	skos:closeMatch	dai:_ad8ec5e3	0.9380796757830466

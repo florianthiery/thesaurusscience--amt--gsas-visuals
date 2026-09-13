@@ -30,7 +30,7 @@ added scenario by scenario (see `PRIMER.md`).
 |---|---|---|
 | 01 | Symmetric/transitive closure via `amt:InverseAxiom` | done |
 | 02 | GSAS as a calibration layer between embedding similarity and AMT input | done |
-| 03 | CIDOC-CRM class inference via Backbone Thesaurus / Pactols anchors | planned |
+| 03 | CIDOC-CRM class inference via a real closeMatch/exactMatch chain | done |
 | 04 | Neuro-symbolic recommender (embedding signal + AMT graph plausibility) | planned |
 | 05 | Feeding raw embedding distances directly into AMT (operator ablation) | planned |
 
@@ -48,6 +48,7 @@ thesaurusscience--amt--gsas-visuals/
 │   ├── data/example_mappings.sssom.tsv   real 2-row excerpt from thesaurusscience
 │   └── img/                           generated: *.svg + *.png (not shipped in patches, see below)
 ├── scenario-02-gsas-calibration/       (same layout as scenario-01)
+├── scenario-03-cidoc-class-inference/  (same layout as scenario-01)
 ├── LICENSE
 ├── CITATION.cff
 ├── requirements.txt
@@ -109,6 +110,16 @@ for the concept pair, but the cosine-similarity value paired with them is an
 **illustrative placeholder** (no embeddings have been computed for
 `thesaurusscience` yet) - stated in that file's own header and in the
 scenario README.
+
+`scenario-03-cidoc-class-inference/data/example_chain.tsv` and
+`fanin_concepts.tsv` are likewise real, unchanged rows from
+`thesaurusscience` (plus one native `skos:exactMatch` statement
+cross-checked directly against `Backbone Thesaurus.ttl`). The one CIDOC-CRM
+class used in that scenario's figures is an **illustrative annotation** -
+neither `thesaurusscience` nor the raw Backbone Thesaurus/Pactols dumps
+contain any `crm:`-typed RDF at all (checked directly) - and its weight is
+reused from GSAS's real minimal-model degrees, not invented. See that
+scenario's README for the full account.
 
 ## AI usage
 
