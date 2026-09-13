@@ -29,7 +29,7 @@ added scenario by scenario (see `PRIMER.md`).
 | # | Scenario | Status |
 |---|---|---|
 | 01 | Symmetric/transitive closure via `amt:InverseAxiom` | done |
-| 02 | GSAS as a calibration layer between embedding similarity and AMT input | planned |
+| 02 | GSAS as a calibration layer between embedding similarity and AMT input | done |
 | 03 | CIDOC-CRM class inference via Backbone Thesaurus / Pactols anchors | planned |
 | 04 | Neuro-symbolic recommender (embedding signal + AMT graph plausibility) | planned |
 | 05 | Feeding raw embedding distances directly into AMT (operator ablation) | planned |
@@ -47,6 +47,7 @@ thesaurusscience--amt--gsas-visuals/
 │   ├── py/build_figures.py
 │   ├── data/example_mappings.sssom.tsv   real 2-row excerpt from thesaurusscience
 │   └── img/                           generated: *.svg + *.png (not shipped in patches, see below)
+├── scenario-02-gsas-calibration/       (same layout as scenario-01)
 ├── LICENSE
 ├── CITATION.cff
 ├── requirements.txt
@@ -70,10 +71,10 @@ python -m venv .venv
 
 pip install -r requirements.txt
 python main.py --list           # show available scenarios
-python main.py --only scenario-01
+python main.py                  # or --only scenario-01 / scenario-02
 ```
 
-Figures are written to `scenario-01-symmetric-closure/img/`. Rebuilding
+Figures are written to each scenario's own `img/` folder. Rebuilding
 produces byte-identical output when nothing has changed (no timestamps, no
 random SVG ids - verified by running the build twice and comparing with
 `cmp`).
@@ -99,6 +100,15 @@ illustrative placeholders added for this repository - the SSSOM source files
 carry no confidence column - and this is stated in the data file's own header
 and in the scenario README so it is not mistaken for a value from
 `thesaurusscience` itself.
+
+`scenario-02-gsas-calibration/data/gsas_reference_values.tsv` is likewise
+copied unchanged from the actual [GSAS](https://github.com/Research-Squirrel-Engineers/GSAS)
+repository's own computed CSV outputs (MIT licence). Its
+`example_concepts.tsv` uses two more real, unchanged `thesaurusscience` rows
+for the concept pair, but the cosine-similarity value paired with them is an
+**illustrative placeholder** (no embeddings have been computed for
+`thesaurusscience` yet) - stated in that file's own header and in the
+scenario README.
 
 ## AI usage
 

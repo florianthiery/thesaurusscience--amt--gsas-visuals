@@ -13,7 +13,7 @@ Ende zurückgeschrieben. Teil A gilt immer, Teil B/C sind die Schritte
 | `LasseMempel/thesaurusscience` | Quelle der echten SSSOM-Mappings | extern, read-only Referenz |
 | `n4o-rse/amt-engine` | Fuzzy-Logic-RDF-Reasoning-Engine | extern, read-only Referenz |
 | `Research-Squirrel-Engineers/GSAS` | Gradual Semantic Alignment for SKOS | extern, read-only Referenz |
-| `florianthiery/thesaurusscience--amt--gsas-visuals` | dieses Repo | neu, S0/S1 erledigt |
+| `florianthiery/thesaurusscience--amt--gsas-visuals` | dieses Repo | neu, S0/S1/S2 erledigt |
 
 **Befunde** (durch tatsächliches Klonen und Lesen der drei Quell-Repos
 geprüft, nicht aus dem Gedächtnis):
@@ -56,6 +56,30 @@ geprüft, nicht aus dem Gedächtnis):
   „—" oder „→" (als leere Kästchen sichtbar im ersten Pillow-Render) — durch
   ASCII-Ersatz (`-`, `->`) behoben. In einer komplett frischen venv (nur
   `Pillow` aus `requirements.txt`) verifiziert (geprüft 2026-09-13).
+- **GSAS-Formeln und -Werte für Szenario 2**, direkt aus den echten Skripten
+  gelesen (nicht aus dem Paper nachgerechnet): 7-Star nutzt
+  `d(s) = (1 − e^(−k·(s−1)/6)) / (1 − e^(−k))` mit `k = 2.0`
+  (`skos/skos.py: degree_of_connection`); Perceptions klassifiziert Phrasen
+  anhand `EXACT_MIN = 0.9382` / `CLOSE_MIN = 0.4948` und nutzt eine
+  Logistik-Kurve `k = 0.348`, `r0 = 9.73` nur zur Interpolation, der
+  eigentliche Degree ist der empirische Median (`skos_perceptions/
+  skos_perceptions.py`). Die Perceptions-Schwellen sind fast identisch mit
+  den 7-Star-Werten für closeMatch/relatedMatch — vermutlich bewusst so
+  kalibriert (geprüft 2026-09-13, `skos_7star_degrees.csv`,
+  `skos_minimal_degrees.csv`, `skos_perceptions_stats.csv`).
+- **Wichtige Modellierungs-Nuance**: GSAS definiert `d(s)` für das 7-Star-
+  Modell formal nur für die 7 diskreten Stufen, nicht als Funktion beliebiger
+  kontinuierlicher Eingaben. Die kontinuierliche Interpolationskurve in
+  `scenario-02-calibration-curves` ist eine Vereinfachung *für diese Abbildung*,
+  keine GSAS-Aussage — im Abbildungstitel und im Szenario-README ausdrücklich
+  so benannt. Die eigentliche AMT-gebundene Abbildung (`scenario-02-pipeline`)
+  bindet stattdessen auf die nächstgelegene diskrete Stufe (Stern 6) und nutzt
+  deren echten, tabellierten Degree (0.9381).
+- **Keine echten Embeddings verfügbar**: Lasse hat laut Chat-Log noch keine
+  SBERT-Embeddings für `thesaurusscience` berechnet, und diese Sandbox hat
+  keinen Internetzugang zu HuggingFace. Der Cosinus-Wert in Szenario 2
+  (0.78, Paar "clay"/"terracotta") ist daher ein klar gekennzeichneter
+  Platzhalter, kein Messwert (geprüft/entschieden 2026-09-13).
 
 ### A2 Zielbild
 
@@ -113,6 +137,10 @@ Eigenschaften, die das fertige Repo erfüllen muss:
 | Bildanzahl je Szenario | Vorschlag 2/3/2/2/2 (insgesamt 11) | Vorschlag, seit 2026-09-13 |
 | Bildformat | SVG + PNG, beide direkt aus derselben Geometrie über eine `Canvas`-Abstraktion (`SVGCanvas`/`PNGCanvas`) | 2026-09-13, korrigiert 2026-09-13 |
 | PNG-Rendering | Reines Pillow (`ImageDraw`, `ImageFont.load_default(size=...)`), **nicht** `cairosvg` | 2026-09-13 (Korrektur, s. Befund unten) |
+| Szenario-2-Beispielpaar | `aat:300010439` "clay" / `aat:300010669` "terracotta" — real, beide einzeln ins DARIAH-Vokabular gemappt, aber nicht miteinander | 2026-09-13 |
+| Szenario-2-Cosinus-Wert | 0.78, illustrativer Platzhalter (keine echten Embeddings verfügbar, kein Internetzugang zu HuggingFace in der Sandbox) | 2026-09-13 |
+| Szenario-2-Bilder | 3 wie vorgeschlagen: Kalibrierungskurven-Vergleich, Pipeline (diskrete Bindung), Balkendiagramm (gleicher Input, 3 Modelle) | 2026-09-13, bestätigt und gebaut |
+| Zweck von Szenario 2 (und generell) | Erster Entwurf zur Vorlage an Lasse Mempel — nicht final, seine Ideen/Änderungswünsche werden danach eingearbeitet | 2026-09-13 |
 
 ### A5 Was in welchem Chat hochgeladen wird
 
@@ -127,7 +155,7 @@ kann mit, ist aber klein genug, dass es keine Rolle spielt).
 |---|---|---|
 | S0 | Repo-Skelett + Entscheidungen | erledigt 2026-09-13 |
 | S1 | Symmetrische/transitive Graderweiterung (`amt:InverseAxiom`) | erledigt 2026-09-13 |
-| S2 | GSAS als Kalibrierungsschicht (Embedding → Degree of Connection) | geplant |
+| S2 | GSAS als Kalibrierungsschicht (Embedding → Degree of Connection) | erledigt 2026-09-13 |
 | S3 | CIDOC-CRM-Klassenschluss über Backbone-Thesaurus/Pactols | geplant |
 | S4 | Neuro-symbolischer Recommender (Ausblick) | geplant |
 | S5 | Kleiner Test: Embedding-Distanzen direkt in AMT | geplant |
@@ -165,7 +193,32 @@ kann mit, ist aber klein genug, dass es keine Rolle spielt).
 - **Abnahme**: `python main.py --only scenario-01` erzeugt beide Abbildungen;
   zweimaliger Lauf ist byte-identisch (`cmp`).
 
-### S2–S5 — noch nicht im Detail geplant
+### S2 — GSAS als Kalibrierungsschicht (erledigt 2026-09-13)
+
+- **Ziel**: Zeigen, wie GSAS eine (hier platzhalterhafte) Embedding-
+  Ähnlichkeit in einen begründeten, AMT-tauglichen Degree übersetzt, und wie
+  unterschiedlich die drei Modelle (Minimal/7-Star/Perceptions) dieselbe
+  Evidenz einschätzen.
+- **Uploads/Daten**: `data/example_concepts.tsv` (echtes, ungemapptes
+  "clay"/"terracotta"-Paar + Platzhalter-Cosinus 0.78);
+  `data/gsas_reference_values.tsv` (echte, unveränderte Degree-Tabellen aus
+  dem GSAS-Repo selbst, siehe A1).
+- **Substanz**: drei Abbildungen —
+  1. `scenario-02-calibration-curves.svg/png`: alle drei Modelle auf einer
+     gemeinsamen `[0,1]`-Achse (7-Star und Perceptions als – für diese
+     Abbildung vereinfachte – kontinuierliche Kurven inkl. aller echten
+     Stützpunkte; Minimal als drei feste Referenzlinien).
+  2. `scenario-02-pipeline.svg/png`: konkretes Beispiel mit diskreter
+     Bindung auf Stern 6 → `skos:closeMatch`, `degree_of_connection = 0.9381`.
+  3. `scenario-02-model-comparison.svg/png`: gleicher Platzhalter-Input,
+     Balkendiagramm über alle drei Modelle (Minimal=7-Star=0.938,
+     Perceptions=0.8 — sichtbar unterschiedlich).
+- **Abnahme**: `python main.py --only scenario-02` erzeugt alle drei
+  Abbildungen; zweimaliger Lauf ist byte-identisch (`cmp`); Konsolen-Ausgabe
+  bestätigt die berechneten Werte.
+- **Hinweis**: erster Entwurf zur Vorlage an Lasse Mempel, nicht final.
+
+### S3–S5 — noch nicht im Detail geplant
 
 Wird zu Beginn des jeweiligen Chats besprochen: Beispieldaten aus
 `thesaurusscience` auswählen, Anzahl und Art der Abbildungen bestätigen, dann
@@ -176,8 +229,9 @@ Szenario 5: Ketten- + Operator-Balkendiagramm).
 
 ## Teil D — Offene Punkte
 
-- Reale Wikidata/SBERT-Cosinuswerte für Szenario 2 berechnen, oder nur
-  illustrative Zahlen? Noch nicht entschieden.
+- ~~Reale Wikidata/SBERT-Cosinuswerte für Szenario 2 berechnen, oder nur
+  illustrative Zahlen?~~ Entschieden (s. A4): illustrativer Platzhalter,
+  da weder Lasse noch diese Sandbox echte Embeddings zur Verfügung haben.
 - `main.py --strict` ist noch nicht implementiert, da noch keine Schritte
   Warnungen erzeugen, die es abfangen könnte — nachholen, sobald relevant.
 - Konkrete Beispielkonzepte für Szenario 3 (CIDOC-CRM-Anker in Backbone
@@ -185,3 +239,6 @@ Szenario 5: Ketten- + Operator-Balkendiagramm).
   ausgewählt.
 - Zenodo-DOI für dieses Repo noch nicht vergeben (`CITATION.cff` hat keinen
   `doi`-Eintrag).
+- Szenario 1 und 2 sind erste Entwürfe zur Vorlage an Lasse Mempel — sobald
+  er Feedback/Ideen dazu hat, ggf. Anpassungen an Beispielen, Modellwahl
+  oder Abbildungen nötig; noch nicht eingearbeitet.

@@ -1,0 +1,33 @@
+#source: values copied unchanged from https://github.com/Research-Squirrel-Engineers/GSAS (MIT licence), commit checked 2026-09-13:
+#  - skos_7star/skos_7star_degrees.csv (7-star model, k=2.0)
+#  - skos/skos_minimal_degrees.csv (minimal model, same k=2.0)
+#  - skos_perceptions/skos_perceptions_stats.csv (perceptions model, 17 phrases, empirical medians)
+#comment: k=2.0 (7-star), EXACT_MIN=0.9382 / CLOSE_MIN=0.4948 (perceptions classification thresholds), logistic k=0.348 / r0=9.73 (perceptions interpolation curve, medians remain the reference values) are read directly from the GSAS scripts, not re-derived.
+model	level_or_phrase	rank_or_star	degree_of_connection	skos_parent
+minimal	relatedMatch (mean d(1..5))		0.49465994151156367	skos:relatedMatch
+minimal	closeMatch (d(6))		0.9380796757830466	skos:closeMatch
+minimal	exactMatch (d(7))		1.0	skos:exactMatch
+7star	relatedMatch very weak	1	0.0	skos:relatedMatch
+7star	relatedMatch weak	2	0.327837	skos:relatedMatch
+7star	relatedMatch moderate	3	0.562742	skos:relatedMatch
+7star	relatedMatch strong	4	0.731059	skos:relatedMatch
+7star	relatedMatch very strong	5	0.851663	skos:relatedMatch
+7star	closeMatch	6	0.93808	skos:closeMatch
+7star	exactMatch	7	1.0	skos:exactMatch
+perceptions	Almost No Chance	1	0.02	skos:relatedMatch
+perceptions	Highly Unlikely	2	0.05	skos:relatedMatch
+perceptions	Chances Are Slight	3	0.1	skos:relatedMatch
+perceptions	Little Chance	4	0.15	skos:relatedMatch
+perceptions	Improbable	5	0.15	skos:relatedMatch
+perceptions	Unlikely	6	0.2	skos:relatedMatch
+perceptions	We Doubt	7	0.25	skos:relatedMatch
+perceptions	Probably Not	8	0.265	skos:relatedMatch
+perceptions	About Even	9	0.5	skos:closeMatch
+perceptions	Better Than Even	10	0.6	skos:closeMatch
+perceptions	Probable	11	0.7	skos:closeMatch
+perceptions	We Believe	12	0.7	skos:closeMatch
+perceptions	Likely	13	0.7	skos:closeMatch
+perceptions	Probably	14	0.75	skos:closeMatch
+perceptions	Very Good Chance	15	0.8	skos:closeMatch
+perceptions	Highly Likely	16	0.9	skos:closeMatch
+perceptions	Almost Certainly	17	0.95	skos:exactMatch
