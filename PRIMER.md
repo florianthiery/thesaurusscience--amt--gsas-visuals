@@ -13,7 +13,7 @@ Ende zurückgeschrieben. Teil A gilt immer, Teil B/C sind die Schritte
 | `LasseMempel/thesaurusscience` | Quelle der echten SSSOM-Mappings | extern, read-only Referenz |
 | `n4o-rse/amt-engine` | Fuzzy-Logic-RDF-Reasoning-Engine | extern, read-only Referenz |
 | `Research-Squirrel-Engineers/GSAS` | Gradual Semantic Alignment for SKOS | extern, read-only Referenz |
-| `florianthiery/thesaurusscience--amt--gsas-visuals` | dieses Repo | neu, S0/S1/S2/S3 erledigt |
+| `florianthiery/thesaurusscience--amt--gsas-visuals` | dieses Repo | neu, S0/S1/S2/S3/S4 erledigt |
 
 **Befunde** (durch tatsächliches Klonen und Lesen der drei Quell-Repos
 geprüft, nicht aus dem Gedächtnis):
@@ -110,6 +110,22 @@ geprüft, nicht aus dem Gedächtnis):
   [0.9381, 1.0, 0.90] **exakt identisch** (0.839076 beide) — eine echte
   mathematische Koinzidenz (Hamacher bei γ=2 ≡ Einstein per Definition),
   keine Rundung (geprüft 2026-09-13).
+- **Reales Beispiel für Szenario 4 gefunden**: `wnk:wk004175` "clay pipe
+  manufacture" hat aktuell nur ein einziges, schwaches `relatedMatch` zu
+  einem unbeschrifteten GND-Konzept — ein echter "braucht ein besseres
+  Mapping"-Fall. Vier reale Kandidatenkonzepte aus
+  `Mappings/ads_aat.sssom.tsv` gefunden, inkl. eines direkt passenden FISH-
+  Konzepts "CLAY PIPE KILN" (geprüft 2026-09-13).
+- **Realer In-Degree als Symbolik-Stellvertreter**: Anzahl der Zeilen in
+  `ads_aat.sssom.tsv`, die auf ein Kandidatenkonzept verweisen, echt gezählt
+  (kilns=4, ceramic=2, brick kilns=1, CLAY PIPE KILN=0). Bewusst als
+  vereinfachter, aber ehrlich berechneter Stellvertreter für "AMT-
+  Graph-Plausibilität" verwendet — echte AMT-Graphgewichte würden
+  gewichtete Pfade über `amt:RoleChainAxiom` komponieren (wie Szenario 3),
+  nicht rohen In-Degree in einer Datei zählen. Ergebnis: unter allen drei
+  getesteten Operatoren (Product, Gödel, GeometricMean) gewinnt "kilns",
+  nicht das lexikalisch nächstliegende "CLAY PIPE KILN" — die eigentliche
+  Pointe für die Fusion zweier Signale (geprüft 2026-09-13).
 
 ### A2 Zielbild
 
@@ -177,6 +193,10 @@ Eigenschaften, die das fertige Repo erfüllen muss:
 | Szenario-3-Logikoperator | Einstein Product (AMT-eigene Empfehlung für 3er-Ketten laut `skos-mapping-example.ttl`); alle 6 Operatoren zum Vergleich gezeigt | 2026-09-13 |
 | Szenario-3-Ordnername | `scenario-03-cidoc-class-inference` (umbenannt von der ursprünglich skizzierten „…-subsumption", passend zur Korrektur) | 2026-09-13 |
 | Szenario-3-Bilder | 5 (Netzwerk, Pipeline, Operator-Vergleich, Fan-in, Vorher/Nachher) — auf Wunsch erweitert von ursprünglich 2 | 2026-09-13 |
+| Szenario-4-Beispiel | `wnk:wk004175` "clay pipe manufacture" (real) gegen 4 reale AAT/FISH-Kandidaten aus `ads_aat.sssom.tsv` | 2026-09-13 |
+| Szenario-4-Symbolik-Signal | Realer In-Degree in `ads_aat.sssom.tsv` (Laplace-geglättet), als ehrlich benannter, vereinfachter Stellvertreter für echte AMT-Graphgewichte | 2026-09-13 |
+| Szenario-4-Fusionsoperator | Product als Schlagzeile, alle 3 nicht-parametrisierten Operatoren zum Robustheitsvergleich gezeigt | 2026-09-13 |
+| Szenario-4-Bilder | 5 (Architektur, Ranking, Quadrant, Operator-Robustheit, Vorher/Nachher) | 2026-09-13 |
 
 ### A5 Was in welchem Chat hochgeladen wird
 
@@ -193,7 +213,7 @@ kann mit, ist aber klein genug, dass es keine Rolle spielt).
 | S1 | Symmetrische/transitive Graderweiterung (`amt:InverseAxiom`) | erledigt 2026-09-13 |
 | S2 | GSAS als Kalibrierungsschicht (Embedding → Degree of Connection) | erledigt 2026-09-13 |
 | S3 | CIDOC-CRM-Klassenschluss über Backbone-Thesaurus/Pactols | erledigt 2026-09-13 |
-| S4 | Neuro-symbolischer Recommender (Ausblick) | geplant |
+| S4 | Neuro-symbolischer Recommender (Ausblick) | erledigt 2026-09-13 |
 | S5 | Kleiner Test: Embedding-Distanzen direkt in AMT | geplant |
 
 ## Teil C — Die Schritte
@@ -279,13 +299,39 @@ kann mit, ist aber klein genug, dass es keine Rolle spielt).
   bestätigt alle 6 Operator-Werte.
 - **Hinweis**: wie S1/S2 ein erster Entwurf zur Vorlage an Lasse Mempel.
 
-### S4–S5 — noch nicht im Detail geplant
+### S4 — Neuro-symbolischer Recommender / Ausblick (erledigt 2026-09-13)
+
+- **Ziel**: Lasses "Endgame"-Idee (Embedding-Ähnlichkeit + AMT-
+  Graph-Plausibilität fusioniert zu einem Ranking-Score) konkret an einem
+  Beispiel zeigen, ausdrücklich als Ausblick, nicht als gebautes System.
+- **Uploads/Daten**: `data/candidates.tsv` — ein echtes Quellkonzept ohne
+  starkes Mapping, vier echte Kandidatenkonzepte mit echtem In-Degree als
+  Symbolik-Stellvertreter, illustrativer Cosinus als neuronales Signal.
+- **Substanz**: fünf Abbildungen —
+  1. `scenario-04-architecture`: zwei Signalpfade → Fusionsoperator →
+     Ranking.
+  2. `scenario-04-ranking`: gruppiertes Balkendiagramm, alle 4 Kandidaten,
+     neuronal/symbolisch/fusioniert.
+  3. `scenario-04-quadrant`: neuronal vs. symbolisch als Streudiagramm —
+     zeigt visuell, warum "CLAY PIPE KILN" trotz höchstem neuronalen Wert
+     verliert.
+  4. `scenario-04-operator-robustness`: 3 Operatoren, gleicher Gewinner
+     ("kilns") bei allen dreien.
+  5. `scenario-04-before-after`: Neuronal-only-Ranking vs. fusioniertes
+     Ranking nebeneinander.
+- **Abnahme**: `python main.py --only scenario-04` erzeugt alle fünf
+  Abbildungen; zweimaliger Lauf ist byte-identisch (`cmp`); Konsolen-Ausgabe
+  bestätigt alle Werte.
+- **Hinweis**: wie S1–S3 ein erster Entwurf zur Vorlage an Lasse Mempel;
+  explizit als Ausblick markiert, kein implementierter Recommender.
+
+### S5 — noch nicht im Detail geplant
 
 Wird zu Beginn des jeweiligen Chats besprochen: Beispieldaten aus
 `thesaurusscience` auswählen, Anzahl und Art der Abbildungen bestätigen, dann
 bauen. Grobe Richtung siehe die Szenario-Beschreibungen im Chat vom
-2026-09-13 (Szenario 4: Architektur- + Ranking-Diagramm; Szenario 5:
-Ketten- + Operator-Balkendiagramm).
+2026-09-13 (Szenario 5: Ketten- + Operator-Balkendiagramm, Embedding-
+Distanzen direkt in AMT).
 
 ## Teil D — Offene Punkte
 
@@ -296,10 +342,13 @@ Ketten- + Operator-Balkendiagramm).
   Warnungen erzeugen, die es abfangen könnte — nachholen, sobald relevant.
 - ~~Konkrete Beispielkonzepte für Szenario 3 ... noch nicht ausgewählt.~~
   Erledigt (s. A1/A4): echte Kette gefunden und verwendet.
-- Beispielkonzepte für Szenario 4/5 noch nicht aus `thesaurusscience`
+- ~~Beispielkonzepte für Szenario 4 ... noch nicht ausgewählt.~~ Erledigt
+  (s. A1/A4): reales Quellkonzept + 4 reale Kandidaten gefunden und
+  verwendet.
+- Beispielkonzepte für Szenario 5 noch nicht aus `thesaurusscience`
   ausgewählt.
 - Zenodo-DOI für dieses Repo noch nicht vergeben (`CITATION.cff` hat keinen
   `doi`-Eintrag).
-- Szenario 1, 2 und 3 sind erste Entwürfe zur Vorlage an Lasse Mempel —
+- Szenario 1, 2, 3 und 4 sind erste Entwürfe zur Vorlage an Lasse Mempel —
   sobald er Feedback/Ideen dazu hat, ggf. Anpassungen an Beispielen,
   Modellwahl oder Abbildungen nötig; noch nicht eingearbeitet.

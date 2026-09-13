@@ -31,7 +31,7 @@ added scenario by scenario (see `PRIMER.md`).
 | 01 | Symmetric/transitive closure via `amt:InverseAxiom` | done |
 | 02 | GSAS as a calibration layer between embedding similarity and AMT input | done |
 | 03 | CIDOC-CRM class inference via a real closeMatch/exactMatch chain | done |
-| 04 | Neuro-symbolic recommender (embedding signal + AMT graph plausibility) | planned |
+| 04 | Neuro-symbolic recommender (outlook - embedding signal + AMT graph plausibility) | done |
 | 05 | Feeding raw embedding distances directly into AMT (operator ablation) | planned |
 
 ## Repository structure
@@ -49,6 +49,7 @@ thesaurusscience--amt--gsas-visuals/
 │   └── img/                           generated: *.svg + *.png (not shipped in patches, see below)
 ├── scenario-02-gsas-calibration/       (same layout as scenario-01)
 ├── scenario-03-cidoc-class-inference/  (same layout as scenario-01)
+├── scenario-04-neurosymbolic-recommender/  (same layout as scenario-01)
 ├── LICENSE
 ├── CITATION.cff
 ├── requirements.txt
@@ -120,6 +121,15 @@ neither `thesaurusscience` nor the raw Backbone Thesaurus/Pactols dumps
 contain any `crm:`-typed RDF at all (checked directly) - and its weight is
 reused from GSAS's real minimal-model degrees, not invented. See that
 scenario's README for the full account.
+
+`scenario-04-neurosymbolic-recommender/data/candidates.tsv` mixes real and
+added data too: the source concept and all four candidate concepts are
+real, unchanged `thesaurusscience`/`ads_aat.sssom.tsv` entries, and each
+candidate's in-degree is a genuine count from that file. The neural
+similarity is an illustrative placeholder (as in scenario 2), and the
+in-degree count is used as a deliberately simplified stand-in for AMT graph
+plausibility - see that scenario's README for why. This scenario is an
+outlook, not an implemented recommender.
 
 ## AI usage
 

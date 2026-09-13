@@ -1,0 +1,8 @@
+#source_concept: wnk:wk004175 "clay pipe manufacture" - real, from Mappings/wortnetz__http_lvr_vocnet_org_wnk__unknown_target_scheme.sssom.tsv. Its only existing mapping in thesaurusscience is a single skos:relatedMatch to an unlabeled GND concept (http://d-nb.info/gnd/4331450-8) - exactly the "needs a better mapping" situation the recommender addresses.
+#candidates: four real Getty AAT / FISH concepts, all found in Mappings/ads_aat.sssom.tsv. real_indegree is a genuine count of how many OTHER rows in that one file skos:exactMatch/broadMatch onto this AAT concept (checked 2026-09-13) - used here as a simple, honestly-computed stand-in for "AMT graph plausibility". This is a deliberate simplification: real AMT reasoning would compose weighted paths via amt:RoleChainAxiom across the whole graph (as in scenario 3), not just count raw in-degree in one file - stated plainly in the scenario README.
+#neural_similarity_placeholder: ILLUSTRATIVE, not computed from real embeddings (same limitation as scenario 2 - no embeddings exist for thesaurusscience yet).
+candidate_id	candidate_label	real_indegree_in_ads_aat	neural_similarity_placeholder
+fish:eh_tmt2_69086	CLAY PIPE KILN	0	0.95
+aat:300022798	kilns	4	0.78
+aat:300235507	ceramic (material)	2	0.45
+aat:300022989	brick kilns	1	0.55
