@@ -2,6 +2,7 @@
 #  - skos_7star/skos_7star_degrees.csv (7-star model, k=2.0)
 #  - skos/skos_minimal_degrees.csv (minimal model, same k=2.0)
 #  - skos_perceptions/skos_perceptions_stats.csv (perceptions model, 17 phrases, empirical medians)
+#  - skos_4level/skos_4level_degrees.csv (4-level model, bin means of the 7-star degrees)
 #comment: k=2.0 (7-star), EXACT_MIN=0.9382 / CLOSE_MIN=0.4948 (perceptions classification thresholds), logistic k=0.348 / r0=9.73 (perceptions interpolation curve, medians remain the reference values) are read directly from the GSAS scripts, not re-derived.
 model	level_or_phrase	rank_or_star	degree_of_connection	skos_parent
 minimal	relatedMatch (mean d(1..5))		0.49465994151156367	skos:relatedMatch
@@ -31,3 +32,7 @@ perceptions	Probably	14	0.75	skos:closeMatch
 perceptions	Very Good Chance	15	0.8	skos:closeMatch
 perceptions	Highly Likely	16	0.9	skos:closeMatch
 perceptions	Almost Certainly	17	0.95	skos:exactMatch
+4level	dubious (mean d(1,2))		0.16391827024426917	skos:relatedMatch
+4level	low (mean d(3,4))		0.6469001325643864	skos:relatedMatch
+4level	medium (d(5))		0.8516629019405073	skos:relatedMatch
+4level	high (mean d(6,7))		0.9690398378915233	skos:closeMatch

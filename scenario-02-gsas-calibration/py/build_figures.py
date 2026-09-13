@@ -38,7 +38,16 @@ REPO_ROOT = Path(__file__).resolve().parents[2]
 SCENARIO_ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(REPO_ROOT / "py"))
 
-from viz_utils import Colours, arrow, box, edge_chip, oval, write_outputs  # noqa: E402
+from viz_utils import (  # noqa: E402
+    Colours,
+    arrow,
+    box,
+    edge_chip,
+    oval,
+    rect_shape,
+    text_block,
+    write_outputs,
+)
 
 DATA_DIR = SCENARIO_ROOT / "data"
 IMG_DIR = SCENARIO_ROOT / "img"
@@ -87,11 +96,12 @@ def load_reference():
     minimal = [r for r in rows if r["model"] == "minimal"]
     seven_star = [r for r in rows if r["model"] == "7star"]
     perceptions = [r for r in rows if r["model"] == "perceptions"]
-    return minimal, seven_star, perceptions
+    four_level = [r for r in rows if r["model"] == "4level"]
+    return minimal, seven_star, perceptions, four_level
 
 
 EXAMPLE = load_example()
-MINIMAL, SEVEN_STAR, PERCEPTIONS = load_reference()
+MINIMAL, SEVEN_STAR, PERCEPTIONS, FOUR_LEVEL = load_reference()
 COSINE = EXAMPLE["cosine_similarity"]  # 0.78, illustrative placeholder
 
 # Derived values used across all three figures (computed once, printed by
@@ -298,6 +308,85 @@ def build_model_comparison(canvas) -> None:
                 "#475569", font_size=11.5)
 
 
+
+# ---------------------------------------------------------------------------
+# Figure 4: the 4-Level model (real GSAS data, not shown in figures 1-3)
+# ---------------------------------------------------------------------------
+def build_four_level(canvas) -> None:
+    x0, y0, w, h = 130, 90, 640, 320
+    canvas.text(x0 + w / 2, 34,
+                "The 4-Level model: bin means of the 7-Star degrees",
+                "#0f172a", font_size=15, weight="600")
+
+    draw_axes(canvas, x0, y0, w, h, ylabel="degree of connection",
+              x_ticks=())
+
+    n = len(FOUR_LEVEL)
+    bar_w = 100
+    gap = (w - n * bar_w) / (n + 1)
+    for i, r in enumerate(FOUR_LEVEL):
+        val = float(r["degree_of_connection"])
+        bx = x0 + gap + i * (bar_w + gap)
+        bar_h = val * h
+        by = y0 + h - bar_h
+        box(canvas, bx, by, bar_w, bar_h, "", Colours.PROP_META, rx=5)
+        canvas.text(bx + bar_w / 2, by - 14, f"{val:.3f}", "#0f172a",
+                    font_size=12, weight="600")
+        label, note = r["level_or_phrase"].split(" (")
+        canvas.text(bx + bar_w / 2, y0 + h + 22, label, "#0f172a",
+                    font_size=12, weight="600")
+        canvas.text(bx + bar_w / 2, y0 + h + 40, "(" + note, "#64748b",
+                    font_size=10)
+
+    canvas.text(x0 + w / 2, y0 + h + 72,
+                "Each level is the mean of the 7-Star degrees in its bin -",
+                "#475569", font_size=11.5)
+    canvas.text(x0 + w / 2, y0 + h + 90,
+                "a coarser, more communicable view of the same curve used "
+                "in figure 1.", "#475569", font_size=11.5)
+
+
+# ---------------------------------------------------------------------------
+# Figure 5: model-selection guide (paraphrased from the GSAS paper's own
+# stated use cases for each model, Sections 2.3-2.6 - not verbatim quotes)
+# ---------------------------------------------------------------------------
+def build_model_selection_guide(canvas) -> None:
+    canvas.text(640, 34, "Which GSAS model fits which situation?",
+                "#0f172a", font_size=16, weight="600")
+
+    col_w, col_h = 280, 300
+    gap = 40
+    xs = [40 + i * (col_w + gap) for i in range(4)]
+    y = 80
+
+    cards = [
+        ("Minimal", ["Only plain SKOS mappings", "exist, no confidence data.",
+                     "", "Quick ranking or", "threshold-based filtering."]),
+        ("4-Level", ["Human annotation, curation", "or documentation work.",
+                     "", "Communicable categories", "matter more than precision."]),
+        ("7-Star", ["Technical pipelines and", "research infrastructure.",
+                     "", "Fine-grained, reproducible,", "formally reasoned degrees."]),
+        ("Perceptions", ["Confidence is expressed in", "natural-language phrases,",
+                          "not explicit mapping types.", "",
+                          "Empirically grounded degrees."]),
+    ]
+    for x, (title, lines) in zip(xs, cards):
+        rect_shape(canvas, x, y, col_w, col_h, Colours.PROP_META)
+        canvas.text(x + col_w / 2, y + 34, title, Colours.PROP_META["text"],
+                    font_size=14, weight="600")
+        text_block(canvas, x + col_w / 2, y + 160,
+                    [(t, "normal", 11.5) for t in lines],
+                    Colours.PROP_META["text"], line_height=20)
+
+    canvas.text(640, y + col_h + 40,
+                "Paraphrased from the GSAS paper's own stated rationale for "
+                "each model (Sections 2.3-2.6) - the four are complementary",
+                "#475569", font_size=11.5)
+    canvas.text(640, y + col_h + 58,
+                "entry points into the same Degree-of-Connection scale, not "
+                "a hierarchy from worst to best.", "#475569", font_size=11.5)
+
+
 def main() -> None:
     write_outputs(build_calibration_curves, IMG_DIR,
                   "scenario-02-calibration-curves", width=980, height=600)
@@ -305,6 +394,10 @@ def main() -> None:
                   width=1340, height=340)
     write_outputs(build_model_comparison, IMG_DIR,
                   "scenario-02-model-comparison", width=800, height=520)
+    write_outputs(build_four_level, IMG_DIR, "scenario-02-four-level",
+                  width=900, height=520)
+    write_outputs(build_model_selection_guide, IMG_DIR,
+                  "scenario-02-model-selection-guide", width=1280, height=460)
 
     print(f"Wrote figures to {IMG_DIR}")
     print(f"cosine={COSINE}  7-star continuous degree={SEVEN_STAR_CONTINUOUS_DEGREE:.4f}  "

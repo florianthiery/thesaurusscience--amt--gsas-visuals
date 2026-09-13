@@ -36,7 +36,8 @@ terracotta.
 `data/gsas_reference_values.tsv` **is** real: every degree, star level,
 phrase, median and threshold in it is copied unchanged from the actual GSAS
 repository's own computed CSV outputs (`skos_minimal_degrees.csv`,
-`skos_7star_degrees.csv`, `skos_perceptions_stats.csv`), not recomputed or
+`skos_7star_degrees.csv`, `skos_perceptions_stats.csv`,
+`skos_4level_degrees.csv`), not recomputed or
 approximated. `py/build_figures.py` also copies the exact formulas from the
 real scripts (`skos/skos.py`'s `degree_of_connection`, `skos_perceptions/
 skos_perceptions.py`'s `logistic`), with their actual default parameters:
@@ -115,6 +116,22 @@ nothing about AMT's reasoning has to change to consume them.
 - **`img/scenario-02-model-comparison.svg`/`.png`** - the same placeholder
   input run through all three models' *discrete* binning, side by side:
   Minimal and 7-Star agree (`0.938`), Perceptions differs (`0.8`).
+- **`img/scenario-02-four-level.svg`/`.png`** - the fourth GSAS model, not
+  shown elsewhere in this repository: dubious/low/medium/high, each the real
+  mean of its 7-Star bin (`0.164`/`0.647`/`0.852`/`0.969`) - a coarser,
+  more communicable view of the same curve as figure 1.
+- **`img/scenario-02-model-selection-guide.svg`/`.png`** - which of the four
+  models fits which situation, paraphrased from the GSAS paper's own stated
+  rationale for each (Sections 2.3-2.6): the four are complementary entry
+  points into the same scale, not a hierarchy from worst to best.
+
+## Figures at a glance vs. the fourth model
+
+The 4-Level model is the one GSAS model not otherwise exercised by figures
+1-3 (which focus on Minimal, 7-Star and Perceptions, since those are the
+ones the worked example's calibration and comparison actually use). Figure 4
+above closes that gap using GSAS's own precomputed bin means, not a
+recalculation.
 
 ## Sketch: how this could actually be implemented
 

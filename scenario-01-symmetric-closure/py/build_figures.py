@@ -16,6 +16,7 @@ img/scenario-01-data-flow.{svg,png}.
 
 from __future__ import annotations
 
+import csv
 import sys
 from pathlib import Path
 
@@ -23,9 +24,35 @@ REPO_ROOT = Path(__file__).resolve().parents[2]
 SCENARIO_ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(REPO_ROOT / "py"))
 
-from viz_utils import Colours, arrow, box, edge_chip, oval, write_outputs  # noqa: E402
+from viz_utils import (  # noqa: E402
+    Colours,
+    arrow,
+    box,
+    edge_chip,
+    oval,
+    rect_shape,
+    text_block,
+    write_outputs,
+)
 
 IMG_DIR = SCENARIO_ROOT / "img"
+DATA_DIR = SCENARIO_ROOT / "data"
+
+
+def load_corpus_scale() -> list[dict]:
+    with (DATA_DIR / "corpus_scale.tsv").open(encoding="utf-8") as f:
+        rows = [line for line in f if not line.startswith("#")]
+    data = list(csv.DictReader(rows, delimiter="\t"))
+    for r in data:
+        r["symmetric_rows"] = int(r["symmetric_rows"])
+        r["rows_missing_inverse"] = int(r["rows_missing_inverse"])
+        r["rows_with_inverse"] = int(r["rows_with_inverse"])
+    return data
+
+
+CORPUS_SCALE = load_corpus_scale()
+TOTAL_SYMMETRIC = sum(r["symmetric_rows"] for r in CORPUS_SCALE)
+TOTAL_MISSING = sum(r["rows_missing_inverse"] for r in CORPUS_SCALE)
 
 
 # ---------------------------------------------------------------------------
@@ -176,12 +203,149 @@ def build_data_flow(canvas) -> None:
                     anchor="start")
 
 
+# ---------------------------------------------------------------------------
+# Figure 3: corpus-scale finding (real, computed across the corpus)
+# ---------------------------------------------------------------------------
+def build_corpus_scale(canvas) -> None:
+    canvas.text(580, 34,
+                "How much of the corpus does this actually affect?",
+                "#0f172a", font_size=16, weight="600")
+
+    x0, bar_h, gap = 340, 34, 20
+    row_w = 660
+    rows = CORPUS_SCALE + [{
+        "file": "All four combined",
+        "symmetric_rows": TOTAL_SYMMETRIC,
+        "rows_missing_inverse": TOTAL_MISSING,
+        "rows_with_inverse": TOTAL_SYMMETRIC - TOTAL_MISSING,
+    }]
+    for i, r in enumerate(rows):
+        y = 80 + i * (bar_h + gap)
+        total = r["symmetric_rows"]
+        missing_w = row_w * (r["rows_missing_inverse"] / total) if total else 0
+        has_w = row_w - missing_w
+        bold = i == len(rows) - 1
+        box(canvas, x0, y, missing_w, bar_h, "", Colours.PROP_META, rx=3)
+        if has_w > 2:
+            box(canvas, x0 + missing_w, y, has_w, bar_h, "",
+                Colours.REAL_OBJECT, rx=3)
+        canvas.text(x0 - 20, y + bar_h / 2, r["file"], "#0f172a",
+                    font_size=11.5 if not bold else 12.5,
+                    weight="600" if bold else "normal", anchor="end")
+        pct = 100 * r["rows_missing_inverse"] / total if total else 0
+        canvas.text(x0 + row_w + 20, y + bar_h / 2,
+                    f'{r["rows_missing_inverse"]}/{total} missing ({pct:.1f}%)',
+                    "#475569", font_size=11, anchor="start")
+
+    ly = 80 + len(rows) * (bar_h + gap) + 20
+    box(canvas, x0, ly, 20, 16, "", Colours.PROP_META, rx=3)
+    canvas.text(x0 + 28, ly + 12, "missing inverse", "#0f172a", font_size=11,
+                anchor="start")
+    box(canvas, x0 + 220, ly, 20, 16, "", Colours.REAL_OBJECT, rx=3)
+    canvas.text(x0 + 248, ly + 12, "inverse already present", "#0f172a",
+                font_size=11, anchor="start")
+
+    canvas.text(580, ly + 50,
+                "Counted across 4 real self-mapping files in thesaurusscience "
+                "(every skos:exactMatch/closeMatch/relatedMatch row, since "
+                "all three are symmetric in SKOS) - not just the two rows "
+                "in the worked example above.", "#475569", font_size=11)
+
+
+# ---------------------------------------------------------------------------
+# Figure 4: idempotence (run twice, stable)
+# ---------------------------------------------------------------------------
+def build_idempotence(canvas) -> None:
+    canvas.text(580, 34, "Running the axiom twice does not duplicate anything",
+                "#0f172a", font_size=16, weight="600")
+
+    node_rx, node_ry = 90, 34
+    for panel_x, title in [(20, "Run 1 (on the asserted graph)"),
+                            (620, "Run 2 (on the already-closed graph)")]:
+        canvas.text(panel_x + 260, 70, title, "#0f172a", font_size=12.5,
+                    weight="600")
+        left_cx, right_cx = panel_x + 110, panel_x + 400
+        y = 160
+        oval(canvas, left_cx, y, node_rx, node_ry, "aat:300010439",
+             Colours.SUBJECT_OBJECT, font_size=11)
+        oval(canvas, right_cx, y, node_rx, node_ry, "concept23906",
+             Colours.SUBJECT_OBJECT, font_size=11)
+        arrow(canvas, left_cx + node_rx, y - 10, right_cx - node_rx, y - 10)
+        edge_chip(canvas, (left_cx + right_cx) / 2, y - 40, "exactMatch",
+                  "asserted, w=1.00", width=150)
+        arrow(canvas, right_cx - node_rx, y + 10, left_cx + node_rx, y + 10,
+              dashed=True, colour="#166534")
+        edge_chip(canvas, (left_cx + right_cx) / 2, y + 44, "exactMatch",
+                  "inferred, w=1.00" if panel_x == 20
+                  else "inferred, w=1.00 (unchanged)",
+                  style=Colours.REAL_OBJECT, dashed=True, width=190)
+
+    canvas.line(580, 55, 580, 260, colour="#cbd5e1", width=1.5, dashed=True,
+                arrow=False)
+    caption = [
+        "AMT only strengthens edges already marked amt:inferred; it never",
+        "overwrites an asserted one (amt/reasoning.py). Since run 1's inferred",
+        "edge already carries the maximum weight the axiom would produce,",
+        "run 2 changes nothing - the fixed point is reached in one pass here.",
+    ]
+    for i, line in enumerate(caption):
+        canvas.text(580, 300 + i * 18, line, "#475569", font_size=11.5)
+
+
+# ---------------------------------------------------------------------------
+# Figure 5: InverseAxiom vs RoleChainAxiom - why no operator choice here
+# ---------------------------------------------------------------------------
+def build_axiom_contrast(canvas) -> None:
+    canvas.text(610, 34,
+                "Why this scenario has no fuzzy-operator choice to make",
+                "#0f172a", font_size=16, weight="600")
+
+    col_w = 520
+    xs = [60, 60 + col_w + 60]
+    titles = ["amt:InverseAxiom (this scenario)", "amt:RoleChainAxiom (scenarios 3 & 5)"]
+    bodies = [
+        [("One antecedent, one inverse", "600", 12.5),
+         ("edge mirrored, weight copied as-is", "normal", 11),
+         ("amt:weight(inferred) = amt:weight(asserted)", "normal", 11),
+         ("", "normal", 6),
+         ("No amt:logic property at all -", "normal", 11),
+         ("_apply_inverse() doesn't read one;", "normal", 11),
+         ("the mirroring is a copy, not a composition", "normal", 11)],
+        [("Two or more antecedents", "600", 12.5),
+         ("weights combined along the chain", "normal", 11),
+         ("amt:weight(inferred) = op(w1, w2, ...)", "normal", 11),
+         ("", "normal", 6),
+         ("amt:logic is required -", "normal", 11),
+         ("choice of operator changes the result", "normal", 11)],
+    ]
+    for x, title, body in zip(xs, titles, bodies):
+        rect_shape(canvas, x, 70, col_w, 260, Colours.PROP_META)
+        canvas.text(x + col_w / 2, 96, title, Colours.PROP_META["text"],
+                    font_size=13, weight="600")
+        text_block(canvas, x + col_w / 2, 200, body,
+                    Colours.PROP_META["text"], line_height=20)
+
+    canvas.text(610, 360,
+                "This is why scenario 1's weights are exact copies (w=1.00, "
+                "w=0.60) while scenarios 3 and 5 show six different answers "
+                "for the same chain - the two axiom types solve different "
+                "problems.", "#475569", font_size=11.5)
+
+
 def main() -> None:
     write_outputs(build_inverse_closure, IMG_DIR, "scenario-01-inverse-closure",
                   width=1160, height=560)
     write_outputs(build_data_flow, IMG_DIR, "scenario-01-data-flow",
                   width=1260, height=430)
+    write_outputs(build_corpus_scale, IMG_DIR, "scenario-01-corpus-scale",
+                  width=1160, height=440)
+    write_outputs(build_idempotence, IMG_DIR, "scenario-01-idempotence",
+                  width=1160, height=420)
+    write_outputs(build_axiom_contrast, IMG_DIR, "scenario-01-axiom-contrast",
+                  width=1220, height=420)
     print(f"Wrote figures to {IMG_DIR}")
+    print(f"Corpus scale: {TOTAL_MISSING}/{TOTAL_SYMMETRIC} symmetric rows "
+          f"missing an inverse ({100 * TOTAL_MISSING / TOTAL_SYMMETRIC:.1f}%)")
 
 
 if __name__ == "__main__":

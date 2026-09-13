@@ -78,6 +78,14 @@ confidence column at all. This is stated in the data file's own header
 comment as well, so it cannot be mistaken for a value that actually appears
 in `thesaurusscience`.
 
+`data/corpus_scale.tsv` is real, computed data of a different kind: counts,
+not example rows. For four real self-mapping files (subject and object
+vocabulary the same, so a missing inverse would have to appear as a separate
+row in the same file if it existed), every row whose predicate is one of the
+three SKOS-symmetric properties was counted, and checked for whether its
+reverse triple also appears in that file. See `img/scenario-01-corpus-scale`
+below for the result.
+
 ## Figures
 
 - **`img/scenario-01-inverse-closure.svg`/`.png`** - before/after network: the
@@ -88,8 +96,24 @@ in `thesaurusscience`.
   RDF quad (`rdf:subject`/`predicate`/`object` + `amt:weight`) →
   `amt:InverseAxiom` (SHACL-validated) → mirrored RDF quad → new TSV row,
   closing the loop back towards a Cocoda-importable concordance.
+- **`img/scenario-01-corpus-scale.svg`/`.png`** - real, corpus-wide evidence
+  for how much of `thesaurusscience` this actually affects: across four real
+  self-mapping files, counting every `skos:exactMatch`/`closeMatch`/
+  `relatedMatch` row (all three symmetric in SKOS), **9,822 of 9,831 rows
+  (99.9%)** have no inverse present anywhere in the same file - not just the
+  two rows used in the worked example above.
+- **`img/scenario-01-idempotence.svg`/`.png`** - running the axiom a second
+  time on an already-closed graph changes nothing: AMT only strengthens
+  edges already marked `amt:inferred` and never overwrites an asserted one,
+  so the fixed point is reached in one pass here.
+- **`img/scenario-01-axiom-contrast.svg`/`.png`** - why this scenario has no
+  fuzzy-operator choice to make, contrasted with `amt:RoleChainAxiom`
+  (scenarios 3 and 5): `InverseAxiom` mirrors a weight as-is (no `amt:logic`
+  property, and `_apply_inverse()` in the engine never reads one), while
+  `RoleChainAxiom` composes multiple weights and requires choosing an
+  operator.
 
-Both figures use Florian Thiery's standing colour scheme for RDF/ontology
+Every figure uses Florian Thiery's standing colour scheme for RDF/ontology
 node types (`py/viz_utils.py: Colours`). The data-flow figure also needs two
 boxes for things that are *not* RDF node types in that scheme (the external
 TSV row at either end); those are drawn in a separate neutral grey and called

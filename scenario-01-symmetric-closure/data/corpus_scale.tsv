@@ -1,0 +1,7 @@
+#source: computed directly (2026-09-13) from four self-mapping SSSOM files in https://github.com/LasseMempel/thesaurusscience (CC BY 4.0) - files where subject_source == object_source, so a missing inverse would have to appear as a separate row in the SAME file if it existed. Counted every row whose predicate is one of the three SKOS-symmetric properties (skos:exactMatch, skos:closeMatch, skos:relatedMatch - all three defined as symmetric in the SKOS Reference), and checked whether the reverse (object, predicate, subject) triple also appears in that file.
+#comment: this is real, corpus-wide evidence for the scope of the gap scenario-01's amt:InverseAxiom closes - not just the two rows used in the main example.
+file	symmetric_rows	rows_missing_inverse	rows_with_inverse
+DAI self-mapping	9205	9197	8
+DARIAH materials self-mapping	239	239	0
+DARIAH cultural periods self-mapping	386	386	0
+Pactols self-mapping	1	0	1

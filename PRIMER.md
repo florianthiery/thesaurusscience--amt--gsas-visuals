@@ -134,6 +134,23 @@ geprüft, nicht aus dem Gedächtnis):
   0.107) als beim GSAS-kalibrierten Wert — plausibel erklärbar dadurch,
   dass GSAS-Werte näher an den Extremen (0/1) liegen, wo alle sechs
   T-Normen/Co-Normen stärker übereinstimmen (geprüft/berechnet 2026-09-13).
+- **Szenario 1, Corpus-Scale-Nachtrag**: über vier echte Selbstabbildungs-
+  Dateien gezählt (jede Zeile mit symmetrischem SKOS-Prädikat: exactMatch/
+  closeMatch/relatedMatch), fehlt bei **9.822 von 9.831 Zeilen (99,9 %)**
+  die Inverse in derselben Datei — nicht nur bei den zwei Beispielzeilen.
+  Bestätigt, dass das Problem corpus-weit ist, nicht nur ein Spielbeispiel
+  (geprüft/gezählt 2026-09-13).
+- **Szenario 1, Korrektur einer eigenen Behauptung vor Auslieferung**: erster
+  Entwurf der Abbildung 5 behauptete "SHACL verbietet `amt:logic` bei
+  `InverseAxiom`" — geprüft und falsch befunden (`amt-shapes.ttl` hat kein
+  `sh:closed`, verbietet also nichts explizit). Richtig: `_apply_inverse()`
+  in `amt/reasoning.py` liest schlicht kein `amt:logic`-Property, die
+  Spiegelung ist eine reine Kopie, keine Komposition (korrigiert vor
+  Auslieferung, 2026-09-13).
+- **Szenario 2, 4-Level-Modell nachgetragen**: echte Werte aus
+  `skos_4level/skos_4level_degrees.csv` — dubious=0.164 (mean d(1,2)),
+  low=0.647 (mean d(3,4)), medium=0.852 (d(5)), high=0.969 (mean d(6,7)) —
+  bislang in keiner Abbildung gezeigt (geprüft 2026-09-13).
 
 ### A2 Zielbild
 
@@ -207,6 +224,7 @@ Eigenschaften, die das fertige Repo erfüllen muss:
 | Szenario-4-Bilder | 5 (Architektur, Ranking, Quadrant, Operator-Robustheit, Vorher/Nachher) | 2026-09-13 |
 | Szenario-5-Test | Dieselbe echte Kette wie Szenario 3, closeMatch-Gewicht 2x variiert (GSAS 0.9381 vs. illustrativ 0.65) | 2026-09-13 |
 | Szenario-5-Bilder | 5 (Kette mit Doppel-Gewicht, Heatmap, Headline-Vergleich, Sensitivitäts-Spread, Takeaway) | 2026-09-13 |
+| Szenario-1/2 auf 5 Bilder erweitert | Auf Wunsch nachträglich: S1 +3 (Corpus-Scale, Idempotenz, Axiom-Kontrast), S2 +2 (4-Level-Modell, Modellauswahl-Guide) | 2026-09-13 |
 
 ### A5 Was in welchem Chat hochgeladen wird
 
@@ -248,16 +266,23 @@ kann mit, ist aber klein genug, dass es keine Rolle spielt).
   Handscript geplant war (`a exactMatch b` → `b exactMatch a`, dasselbe für
   `relatedMatch`).
 - **Uploads/Daten**: `data/example_mappings.sssom.tsv` — zwei echte,
-  unveränderte Zeilen aus `thesaurusscience` (siehe A1).
-- **Substanz**: zwei Abbildungen —
+  unveränderte Zeilen aus `thesaurusscience` (siehe A1); `data/corpus_scale.tsv`
+  — echte Zählung über 4 Selbstabbildungs-Dateien (nachgetragen, s. u.).
+- **Substanz**: fünf Abbildungen (nachträglich von 2 auf 5 erweitert) —
   1. `scenario-01-inverse-closure.svg/png`: Vorher/Nachher-Netzwerk (2 Paare,
      Vorher nur Hinkante, Nachher zusätzlich gespiegelte, gestrichelte
      Rückkante mit `amt:InverseAxiom`-Beschriftung).
   2. `scenario-01-data-flow.svg/png`: Pipeline SSSOM-TSV → RDF-Quadrupel →
      `amt:InverseAxiom` (SHACL-validiert) → gespiegeltes Quadrupel → neue
      TSV-Zeile.
-- **Abnahme**: `python main.py --only scenario-01` erzeugt beide Abbildungen;
-  zweimaliger Lauf ist byte-identisch (`cmp`).
+  3. `scenario-01-corpus-scale.svg/png`: echte Zählung — 9.822/9.831 (99,9 %)
+     symmetrische Zeilen ohne Inverse, über 4 Dateien.
+  4. `scenario-01-idempotence.svg/png`: zweimaliger Lauf, zweiter Lauf ändert
+     nichts (Fixpunkt nach einem Durchlauf erreicht).
+  5. `scenario-01-axiom-contrast.svg/png`: `InverseAxiom` (Kopie, kein
+     Operator) vs. `RoleChainAxiom` (Komposition, Operator nötig).
+- **Abnahme**: `python main.py --only scenario-01` erzeugt alle fünf
+  Abbildungen; zweimaliger Lauf ist byte-identisch (`cmp`).
 
 ### S2 — GSAS als Kalibrierungsschicht (erledigt 2026-09-13)
 
@@ -268,8 +293,8 @@ kann mit, ist aber klein genug, dass es keine Rolle spielt).
 - **Uploads/Daten**: `data/example_concepts.tsv` (echtes, ungemapptes
   "clay"/"terracotta"-Paar + Platzhalter-Cosinus 0.78);
   `data/gsas_reference_values.tsv` (echte, unveränderte Degree-Tabellen aus
-  dem GSAS-Repo selbst, siehe A1).
-- **Substanz**: drei Abbildungen —
+  dem GSAS-Repo selbst, inkl. nachgetragenem 4-Level-Modell, siehe A1).
+- **Substanz**: fünf Abbildungen (nachträglich von 3 auf 5 erweitert) —
   1. `scenario-02-calibration-curves.svg/png`: alle drei Modelle auf einer
      gemeinsamen `[0,1]`-Achse (7-Star und Perceptions als – für diese
      Abbildung vereinfachte – kontinuierliche Kurven inkl. aller echten
@@ -279,7 +304,12 @@ kann mit, ist aber klein genug, dass es keine Rolle spielt).
   3. `scenario-02-model-comparison.svg/png`: gleicher Platzhalter-Input,
      Balkendiagramm über alle drei Modelle (Minimal=7-Star=0.938,
      Perceptions=0.8 — sichtbar unterschiedlich).
-- **Abnahme**: `python main.py --only scenario-02` erzeugt alle drei
+  4. `scenario-02-four-level.svg/png`: das 4-Level-Modell (echte Werte:
+     dubious=0.164, low=0.647, medium=0.852, high=0.969) — bislang in
+     keiner Abbildung gezeigt.
+  5. `scenario-02-model-selection-guide.svg/png`: welches der vier Modelle
+     zu welcher Situation passt, paraphrasiert aus dem GSAS-Paper selbst.
+- **Abnahme**: `python main.py --only scenario-02` erzeugt alle fünf
   Abbildungen; zweimaliger Lauf ist byte-identisch (`cmp`); Konsolen-Ausgabe
   bestätigt die berechneten Werte.
 - **Hinweis**: erster Entwurf zur Vorlage an Lasse Mempel, nicht final.
