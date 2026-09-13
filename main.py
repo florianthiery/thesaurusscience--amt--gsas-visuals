@@ -31,6 +31,7 @@ STEPS: list[tuple[str, str]] = [
     ("scenario-03", "scenario-03-cidoc-class-inference/py/build_figures.py"),
     ("scenario-04", "scenario-04-neurosymbolic-recommender/py/build_figures.py"),
     ("scenario-05", "scenario-05-embedding-feed-test/py/build_figures.py"),
+    ("scenario-06", "scenario-06-chain-hierarchies/py/build_figures.py"),
 ]
 
 

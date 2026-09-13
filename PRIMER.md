@@ -13,7 +13,7 @@ Ende zurückgeschrieben. Teil A gilt immer, Teil B/C sind die Schritte
 | `LasseMempel/thesaurusscience` | Quelle der echten SSSOM-Mappings | extern, read-only Referenz |
 | `n4o-rse/amt-engine` | Fuzzy-Logic-RDF-Reasoning-Engine | extern, read-only Referenz |
 | `Research-Squirrel-Engineers/GSAS` | Gradual Semantic Alignment for SKOS | extern, read-only Referenz |
-| `florianthiery/thesaurusscience--amt--gsas-visuals` | dieses Repo | neu, S0–S5 erledigt (alle 5 Szenarien) |
+| `florianthiery/thesaurusscience--amt--gsas-visuals` | dieses Repo | neu, S0–S6 erledigt (alle 6 Szenarien) |
 
 **Befunde** (durch tatsächliches Klonen und Lesen der drei Quell-Repos
 geprüft, nicht aus dem Gedächtnis):
@@ -151,6 +151,32 @@ geprüft, nicht aus dem Gedächtnis):
   `skos_4level/skos_4level_degrees.csv` — dubious=0.164 (mean d(1,2)),
   low=0.647 (mean d(3,4)), medium=0.852 (d(5)), high=0.969 (mean d(6,7)) —
   bislang in keiner Abbildung gezeigt (geprüft 2026-09-13).
+- **Szenario 6, SKOS Reference direkt geprüft** (W3C Recommendation,
+  18.08.2009): nur `skos:exactMatch` ist transitiv (Section 10.6.3, explizit
+  so formuliert). `closeMatch` ist bewusst nicht transitiv, Begründung laut
+  Section 10.1 (paraphrasiert): Vermeidung von "compound errors" beim
+  Kombinieren über mehr als zwei Vokabulare. `broadMatch`/`narrowMatch` sind
+  Sub-Properties von `broader`/`narrower` (S41) und zueinander invers (S43),
+  aber ebenfalls nicht transitiv. Erste Version hatte "Section 8.1" zitiert
+  — beim Nachschlagen im vollständigen Dokument als "Section 10.1"
+  korrigiert, vor Auslieferung (geprüft 2026-09-13).
+- **Szenario 6, Korrektur zu Szenario 3**: `amt-engine`s eigene
+  Ontology-README (`ontology/README.md`) nennt für 3-äre Ketten **Gödel**
+  als Default-Empfehlung (Einstein/GeometricMean als Alternativen) — nicht
+  Einstein, wie in Szenario 3 zu allgemein formuliert. Der dortige
+  Einstein-Kommentar im Beispielfile begründete Einstein nur gegenüber
+  Product für eine bestimmte 3er-Kette, nicht gegenüber Gödel generell.
+  Szenario 3 selbst wurde dafür (noch) nicht rückwirkend geändert — auf
+  Wunsch nachholbar (geprüft 2026-09-13).
+- **Szenario 6, drei echte mehrstufige Ketten gefunden**, die gemischte
+  SKOS-Properties über mehrere Vokabulare hinweg verketten: (1) Backbone
+  `materials` –narrowMatch→ GEMET `metal` –closeMatch→ DBpedia `Metal`
+  (2-är); (2) Wortnetz `tower` –narrowMatch→ AAT `towers` –exactMatch
+  (Symmetrie)→ DAI `Turm` –exactMatch(Symmetrie)→ DAI `tower alone` (3-är);
+  (3) wie (2), verlängert um –closeMatch→ DAI `Observation tower` (4-är).
+  `narrowMatch` wird von keinem der vier GSAS-Modelle kalibriert — als
+  begründete Analogie wird GSAS' `relatedMatch`-Degree (0.4947) verwendet,
+  klar gekennzeichnet (geprüft 2026-09-13).
 
 ### A2 Zielbild
 
@@ -225,6 +251,10 @@ Eigenschaften, die das fertige Repo erfüllen muss:
 | Szenario-5-Test | Dieselbe echte Kette wie Szenario 3, closeMatch-Gewicht 2x variiert (GSAS 0.9381 vs. illustrativ 0.65) | 2026-09-13 |
 | Szenario-5-Bilder | 5 (Kette mit Doppel-Gewicht, Heatmap, Headline-Vergleich, Sensitivitäts-Spread, Takeaway) | 2026-09-13 |
 | Szenario-1/2 auf 5 Bilder erweitert | Auf Wunsch nachträglich: S1 +3 (Corpus-Scale, Idempotenz, Axiom-Kontrast), S2 +2 (4-Level-Modell, Modellauswahl-Guide) | 2026-09-13 |
+| Szenario-6-Ketten | 3 echte mehrstufige Ketten (2-är/3-är/4-är), gemischte Properties über mehrere Vokabulare (s. A1) | 2026-09-13 |
+| Szenario-6-narrowMatch-Gewicht | GSAS-`relatedMatch`-Degree (0.4947) als begründete Analogie, da GSAS `narrowMatch` nicht kalibriert | 2026-09-13 |
+| Szenario-6-Operatoren je Arität | Aus `amt-engine`s Ontology-README übernommen: Gödel (n=2,3 Default), GeometricMean (n=4 Default) — nicht Einstein wie in Szenario 3 zu allgemein behauptet | 2026-09-13 |
+| Szenario-6-Bilder | 8 (3× Ketten-Diagramm im n-ary-Stil, Operator-nach-Arität, Product-Dämpfung [synthetisch], SKOS-Vorher/Nachher, binär-vs-n-är, GSAS-Abdeckungslücke) | 2026-09-13 |
 
 ### A5 Was in welchem Chat hochgeladen wird
 
@@ -243,6 +273,7 @@ kann mit, ist aber klein genug, dass es keine Rolle spielt).
 | S3 | CIDOC-CRM-Klassenschluss über Backbone-Thesaurus/Pactols | erledigt 2026-09-13 |
 | S4 | Neuro-symbolischer Recommender (Ausblick) | erledigt 2026-09-13 |
 | S5 | Kleiner Test: Embedding-Distanzen direkt in AMT | erledigt 2026-09-13 |
+| S6 | Mehrstufige RoleChainAxioms mit GSAS über gemischte Property-Hierarchien | erledigt 2026-09-13 |
 
 ## Teil C — Die Schritte
 
@@ -389,8 +420,31 @@ kann mit, ist aber klein genug, dass es keine Rolle spielt).
   Embedding-Gewicht ~2,7× breiter als beim GSAS-kalibrierten (s. A1).
 - **Hinweis**: wie S1–S4 ein erster Entwurf zur Vorlage an Lasse Mempel.
 
-Damit sind alle 5 ursprünglich besprochenen Szenarien gebaut. Weiteres
-Vorgehen hängt von Lasses Feedback ab.
+### S6 — Mehrstufige RoleChainAxioms über Property-Hierarchien (erledigt 2026-09-13)
+
+- **Ziel**: zeigen, wie `amt:RoleChainAxiom` genau die Verkettung
+  ermöglicht, die SKOS selbst bewusst nicht erlaubt (nur `exactMatch` ist
+  transitiv), an mehreren echten, mehrstufigen Ketten mit gemischten
+  Properties über mehrere Vokabulare.
+- **Uploads/Daten**: `data/real_chains.tsv` — drei echte Ketten (2-är,
+  3-är, 4-är), s. A1.
+- **Substanz**: acht Abbildungen (auf Wunsch "gerne mehr als 5") —
+  1–3. Ketten-Diagramme im n-ary-Stil von `amt-engine`s eigener
+     Ontology-README (schwarze Antezedens-Pfeile, ein roter gestrichelter
+     Konsequenz-Pfeil).
+  4. Operator-Ergebnis je Kette, alle 6 Operatoren im Vergleich.
+  5. Synthetischer Beleg (nicht aus echten Daten): Product dämpft ab n=4
+     spürbar stärker als Gödel/GeometricMean.
+  6. SKOS Vorher/Nachher (was transitiv ist, was AMT ergänzt).
+  7. Binär- vs. echt-n-äre Operatoren (Faltung vs. Gesamtliste).
+  8. GSAS-Abdeckungslücke (3 von 5 Mapping-Properties kalibriert).
+- **Abnahme**: `python main.py --only scenario-06` erzeugt alle acht
+  Abbildungen; zweimaliger Lauf ist byte-identisch (`cmp`); Konsolen-Ausgabe
+  bestätigt alle Kettengewichte und Operator-Werte.
+- **Hinweis**: wie S1–S5 ein erster Entwurf zur Vorlage an Lasse Mempel.
+
+Damit sind alle 6 bislang besprochenen Szenarien gebaut. Weiteres Vorgehen
+hängt von Lasses Feedback ab.
 
 ## Teil D — Offene Punkte
 
@@ -406,9 +460,17 @@ Vorgehen hängt von Lasses Feedback ab.
   verwendet.
 - ~~Beispielkonzepte für Szenario 5 noch nicht ausgewählt.~~ Erledigt
   (s. A1/A4): dieselbe echte Kette wie Szenario 3 wiederverwendet.
+- **Offen**: Szenario 3 nennt Einstein Product noch als "AMT-Empfehlung für
+  3er-Ketten" — laut Szenario 6/A1 ist das zu allgemein (Default ist
+  Gödel). Szenario 3 selbst wurde dafür noch nicht korrigiert; auf Wunsch
+  nachholbar (kleiner Patch: README-Formulierung anpassen, Abbildung 3
+  ggf. Gödel statt Einstein hervorheben).
+- GSAS deckt `broadMatch`/`narrowMatch` nicht ab (s. Szenario 6). Eine
+  echte GSAS-Erweiterung dafür existiert nicht; Szenario 6 nutzt eine
+  begründete Analogie statt eines Werts.
 - Zenodo-DOI für dieses Repo noch nicht vergeben (`CITATION.cff` hat keinen
   `doi`-Eintrag).
-- Szenario 1, 2, 3, 4 und 5 sind erste Entwürfe zur Vorlage an Lasse
+- Szenario 1, 2, 3, 4, 5 und 6 sind erste Entwürfe zur Vorlage an Lasse
   Mempel — sobald er Feedback/Ideen dazu hat, ggf. Anpassungen an
   Beispielen, Modellwahl oder Abbildungen nötig; noch nicht eingearbeitet.
 - Alle 5 ursprünglich besprochenen Szenarien sind jetzt gebaut. Nächster

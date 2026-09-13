@@ -32,6 +32,7 @@ All five originally discussed scenarios are built (see `PRIMER.md`).
 | 03 | CIDOC-CRM class inference via a real closeMatch/exactMatch chain | done |
 | 04 | Neuro-symbolic recommender (outlook - embedding signal + AMT graph plausibility) | done |
 | 05 | Feeding raw embedding distances directly into AMT (operator ablation) | done |
+| 06 | Multi-step RoleChainAxioms with GSAS across mixed-property hierarchies | done |
 
 ## Repository structure
 
@@ -50,6 +51,7 @@ thesaurusscience--amt--gsas-visuals/
 ├── scenario-03-cidoc-class-inference/  (same layout as scenario-01)
 ├── scenario-04-neurosymbolic-recommender/  (same layout as scenario-01)
 ├── scenario-05-embedding-feed-test/     (same layout as scenario-01)
+├── scenario-06-chain-hierarchies/       (same layout as scenario-01)
 ├── LICENSE
 ├── CITATION.cff
 ├── requirements.txt
@@ -136,6 +138,16 @@ real chain from scenario 3 with one addition: a second, illustrative weight
 for its closeMatch edge, standing in for a raw (uncalibrated) embedding
 similarity fed directly into AMT - testing Lasse Mempel's own suggested
 experiment. See that scenario's README for the resulting comparison.
+
+`scenario-06-chain-hierarchies/data/real_chains.tsv` holds three real,
+multi-vocabulary chains (2/3/4 mapping edges each) that mix SKOS mapping
+properties which cannot compose in plain SKOS on their own. The
+`narrowMatch` weight used throughout is a stated analogy (GSAS's
+`relatedMatch` degree), not a GSAS value for `narrowMatch` itself - GSAS
+does not calibrate hierarchical mapping properties at all. See that
+scenario's README for the full account, including a correction to an
+earlier, over-general claim about AMT's recommended operator for 3-step
+chains.
 
 ## AI usage
 
