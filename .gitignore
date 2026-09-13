@@ -24,3 +24,5 @@ Thumbs.db
 # --- Note ---
 # img/ is NOT ignored: the generated figures are this repository's versioned,
 # citable product, the same convention used across the other -visuals repos.
+
+PATCH-README.md
