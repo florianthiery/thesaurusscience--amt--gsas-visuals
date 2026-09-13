@@ -23,8 +23,7 @@ attributed excerpts from `thesaurusscience`.
 
 ## Status
 
-Only **scenario-01** is built so far. The other four are planned and will be
-added scenario by scenario (see `PRIMER.md`).
+All five originally discussed scenarios are built (see `PRIMER.md`).
 
 | # | Scenario | Status |
 |---|---|---|
@@ -32,7 +31,7 @@ added scenario by scenario (see `PRIMER.md`).
 | 02 | GSAS as a calibration layer between embedding similarity and AMT input | done |
 | 03 | CIDOC-CRM class inference via a real closeMatch/exactMatch chain | done |
 | 04 | Neuro-symbolic recommender (outlook - embedding signal + AMT graph plausibility) | done |
-| 05 | Feeding raw embedding distances directly into AMT (operator ablation) | planned |
+| 05 | Feeding raw embedding distances directly into AMT (operator ablation) | done |
 
 ## Repository structure
 
@@ -50,6 +49,7 @@ thesaurusscience--amt--gsas-visuals/
 ├── scenario-02-gsas-calibration/       (same layout as scenario-01)
 ├── scenario-03-cidoc-class-inference/  (same layout as scenario-01)
 ├── scenario-04-neurosymbolic-recommender/  (same layout as scenario-01)
+├── scenario-05-embedding-feed-test/     (same layout as scenario-01)
 ├── LICENSE
 ├── CITATION.cff
 ├── requirements.txt
@@ -130,6 +130,12 @@ similarity is an illustrative placeholder (as in scenario 2), and the
 in-degree count is used as a deliberately simplified stand-in for AMT graph
 plausibility - see that scenario's README for why. This scenario is an
 outlook, not an implemented recommender.
+
+`scenario-05-embedding-feed-test/data/chain_variants.tsv` reuses the exact
+real chain from scenario 3 with one addition: a second, illustrative weight
+for its closeMatch edge, standing in for a raw (uncalibrated) embedding
+similarity fed directly into AMT - testing Lasse Mempel's own suggested
+experiment. See that scenario's README for the resulting comparison.
 
 ## AI usage
 

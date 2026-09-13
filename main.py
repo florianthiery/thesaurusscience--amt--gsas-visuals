@@ -30,8 +30,7 @@ STEPS: list[tuple[str, str]] = [
     ("scenario-02", "scenario-02-gsas-calibration/py/build_figures.py"),
     ("scenario-03", "scenario-03-cidoc-class-inference/py/build_figures.py"),
     ("scenario-04", "scenario-04-neurosymbolic-recommender/py/build_figures.py"),
-    # Appended here once discussed and built (see PRIMER.md Teil B):
-    # ("scenario-05", "scenario-05-embedding-feed-test/py/build_figures.py"),
+    ("scenario-05", "scenario-05-embedding-feed-test/py/build_figures.py"),
 ]
 
 

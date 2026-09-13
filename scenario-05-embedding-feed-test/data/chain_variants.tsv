@@ -1,0 +1,7 @@
+#source: reuses the exact same real 2-hop chain as scenario-03-cidoc-class-inference/data/example_chain.tsv (Artefact -closeMatch-> goods and commodities -exactMatch-> mobile objects), plus the same illustrative hasCRMClass step - see that scenario's README for the full provenance account.
+#comment: this file adds ONE thing: a second, alternative weight for the closeMatch edge, to test Lasse Mempel's own suggested experiment ("was passiert, wenn man AMT mit den Embedding-Distanzen fuettert") - feeding a raw (1 - cosine_distance)-style embedding similarity directly into AMT, bypassing GSAS's calibration step entirely, and comparing against the GSAS-calibrated weight used in scenario 3.
+#comment_2: weight_gsas_calibrated (0.9381) is GSAS's real minimal-model closeMatch degree, unchanged from scenario 2/3. weight_raw_embedding (0.65) is an ILLUSTRATIVE placeholder standing in for an uncalibrated embedding similarity - no real embeddings exist for thesaurusscience yet (same limitation as scenario 2/4). The other two edges (exactMatch=1.0, hasCRMClass=0.90) are unchanged from scenario 3 in both variants, so only the closeMatch input differs between the two test conditions.
+edge	subject_id	predicate_id	object_id	weight_gsas_calibrated	weight_raw_embedding
+1	dai:_fac3092f	skos:closeMatch	dai:_ad8ec5e3	0.9380796757830466	0.65
+2	dai:_ad8ec5e3	skos:exactMatch	bbt:Concept_000017	1.0	1.0
+3	bbt:Concept_000017	ex:hasCRMClass	crm:E22_Human-Made_Object	0.90	0.90

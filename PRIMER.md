@@ -13,7 +13,7 @@ Ende zurückgeschrieben. Teil A gilt immer, Teil B/C sind die Schritte
 | `LasseMempel/thesaurusscience` | Quelle der echten SSSOM-Mappings | extern, read-only Referenz |
 | `n4o-rse/amt-engine` | Fuzzy-Logic-RDF-Reasoning-Engine | extern, read-only Referenz |
 | `Research-Squirrel-Engineers/GSAS` | Gradual Semantic Alignment for SKOS | extern, read-only Referenz |
-| `florianthiery/thesaurusscience--amt--gsas-visuals` | dieses Repo | neu, S0/S1/S2/S3/S4 erledigt |
+| `florianthiery/thesaurusscience--amt--gsas-visuals` | dieses Repo | neu, S0–S5 erledigt (alle 5 Szenarien) |
 
 **Befunde** (durch tatsächliches Klonen und Lesen der drei Quell-Repos
 geprüft, nicht aus dem Gedächtnis):
@@ -126,6 +126,14 @@ geprüft, nicht aus dem Gedächtnis):
   getesteten Operatoren (Product, Gödel, GeometricMean) gewinnt "kilns",
   nicht das lexikalisch nächstliegende "CLAY PIPE KILN" — die eigentliche
   Pointe für die Fusion zweier Signale (geprüft 2026-09-13).
+- **Szenario 5, Lasses "kleiner Test" konkret gerechnet**: dieselbe echte
+  Kette aus Szenario 3, nur die closeMatch-Kante mit zwei Alternativ-
+  Gewichten (0.9381 GSAS-kalibriert vs. 0.65 illustrativ als "roher,
+  direkt eingespeister Embedding-Wert"). Ergebnis: die Spannweite über alle
+  6 Operatoren ist beim rohen Embedding-Wert **~2,7× breiter** (0.286 vs.
+  0.107) als beim GSAS-kalibrierten Wert — plausibel erklärbar dadurch,
+  dass GSAS-Werte näher an den Extremen (0/1) liegen, wo alle sechs
+  T-Normen/Co-Normen stärker übereinstimmen (geprüft/berechnet 2026-09-13).
 
 ### A2 Zielbild
 
@@ -197,6 +205,8 @@ Eigenschaften, die das fertige Repo erfüllen muss:
 | Szenario-4-Symbolik-Signal | Realer In-Degree in `ads_aat.sssom.tsv` (Laplace-geglättet), als ehrlich benannter, vereinfachter Stellvertreter für echte AMT-Graphgewichte | 2026-09-13 |
 | Szenario-4-Fusionsoperator | Product als Schlagzeile, alle 3 nicht-parametrisierten Operatoren zum Robustheitsvergleich gezeigt | 2026-09-13 |
 | Szenario-4-Bilder | 5 (Architektur, Ranking, Quadrant, Operator-Robustheit, Vorher/Nachher) | 2026-09-13 |
+| Szenario-5-Test | Dieselbe echte Kette wie Szenario 3, closeMatch-Gewicht 2x variiert (GSAS 0.9381 vs. illustrativ 0.65) | 2026-09-13 |
+| Szenario-5-Bilder | 5 (Kette mit Doppel-Gewicht, Heatmap, Headline-Vergleich, Sensitivitäts-Spread, Takeaway) | 2026-09-13 |
 
 ### A5 Was in welchem Chat hochgeladen wird
 
@@ -214,7 +224,7 @@ kann mit, ist aber klein genug, dass es keine Rolle spielt).
 | S2 | GSAS als Kalibrierungsschicht (Embedding → Degree of Connection) | erledigt 2026-09-13 |
 | S3 | CIDOC-CRM-Klassenschluss über Backbone-Thesaurus/Pactols | erledigt 2026-09-13 |
 | S4 | Neuro-symbolischer Recommender (Ausblick) | erledigt 2026-09-13 |
-| S5 | Kleiner Test: Embedding-Distanzen direkt in AMT | geplant |
+| S5 | Kleiner Test: Embedding-Distanzen direkt in AMT | erledigt 2026-09-13 |
 
 ## Teil C — Die Schritte
 
@@ -325,13 +335,32 @@ kann mit, ist aber klein genug, dass es keine Rolle spielt).
 - **Hinweis**: wie S1–S3 ein erster Entwurf zur Vorlage an Lasse Mempel;
   explizit als Ausblick markiert, kein implementierter Recommender.
 
-### S5 — noch nicht im Detail geplant
+### S5 — Kleiner Test: Embedding-Distanzen direkt in AMT (erledigt 2026-09-13)
 
-Wird zu Beginn des jeweiligen Chats besprochen: Beispieldaten aus
-`thesaurusscience` auswählen, Anzahl und Art der Abbildungen bestätigen, dann
-bauen. Grobe Richtung siehe die Szenario-Beschreibungen im Chat vom
-2026-09-13 (Szenario 5: Ketten- + Operator-Balkendiagramm, Embedding-
-Distanzen direkt in AMT).
+- **Ziel**: Lasses eigenen Vorschlag konkret durchrechnen — was passiert,
+  wenn man AMT statt eines GSAS-kalibrierten Gewichts direkt einen rohen
+  (illustrativen) Embedding-Ähnlichkeitswert füttert.
+- **Uploads/Daten**: `data/chain_variants.tsv` — dieselbe echte Kette wie
+  Szenario 3, mit einem zweiten, illustrativen Gewicht für die
+  closeMatch-Kante.
+- **Substanz**: fünf Abbildungen —
+  1. `scenario-05-chain`: die Kette mit beiden Gewicht-Varianten an
+     derselben Kante.
+  2. `scenario-05-heatmap`: 2×6-Raster (Eingabebedingung × Operator).
+  3. `scenario-05-headline-comparison`: beide Bedingungen unter Einstein
+     Product allein.
+  4. `scenario-05-sensitivity-spread`: Min-Max-Spannweite je Bedingung als
+     Dumbbell-Diagramm.
+  5. `scenario-05-takeaway`: das Ergebnis in einem Satz.
+- **Abnahme**: `python main.py --only scenario-05` erzeugt alle fünf
+  Abbildungen; zweimaliger Lauf ist byte-identisch (`cmp`); Konsolen-Ausgabe
+  bestätigt alle Werte inkl. Spannweiten.
+- **Ergebnis**: Spannweite über alle 6 Operatoren ist beim rohen
+  Embedding-Gewicht ~2,7× breiter als beim GSAS-kalibrierten (s. A1).
+- **Hinweis**: wie S1–S4 ein erster Entwurf zur Vorlage an Lasse Mempel.
+
+Damit sind alle 5 ursprünglich besprochenen Szenarien gebaut. Weiteres
+Vorgehen hängt von Lasses Feedback ab.
 
 ## Teil D — Offene Punkte
 
@@ -345,10 +374,13 @@ Distanzen direkt in AMT).
 - ~~Beispielkonzepte für Szenario 4 ... noch nicht ausgewählt.~~ Erledigt
   (s. A1/A4): reales Quellkonzept + 4 reale Kandidaten gefunden und
   verwendet.
-- Beispielkonzepte für Szenario 5 noch nicht aus `thesaurusscience`
-  ausgewählt.
+- ~~Beispielkonzepte für Szenario 5 noch nicht ausgewählt.~~ Erledigt
+  (s. A1/A4): dieselbe echte Kette wie Szenario 3 wiederverwendet.
 - Zenodo-DOI für dieses Repo noch nicht vergeben (`CITATION.cff` hat keinen
   `doi`-Eintrag).
-- Szenario 1, 2, 3 und 4 sind erste Entwürfe zur Vorlage an Lasse Mempel —
-  sobald er Feedback/Ideen dazu hat, ggf. Anpassungen an Beispielen,
-  Modellwahl oder Abbildungen nötig; noch nicht eingearbeitet.
+- Szenario 1, 2, 3, 4 und 5 sind erste Entwürfe zur Vorlage an Lasse
+  Mempel — sobald er Feedback/Ideen dazu hat, ggf. Anpassungen an
+  Beispielen, Modellwahl oder Abbildungen nötig; noch nicht eingearbeitet.
+- Alle 5 ursprünglich besprochenen Szenarien sind jetzt gebaut. Nächster
+  Schritt hängt von Lasses Rückmeldung ab — ggf. Überarbeitung statt neuer
+  Szenarien.
