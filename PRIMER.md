@@ -42,6 +42,20 @@ geprüft, nicht aus dem Gedächtnis):
   `exactMatch`-Paar mit einseitig aufgelöstem Label
   (`aat:300010439` → `oeai-materials:concept23906` "clay"); keine Rückkante
   im Corpus vorhanden (geprüft 2026-09-13).
+- **`cairosvg` bricht auf Windows** (Flos Maschine, gemeldet nach dem ersten
+  Commit): `OSError: no library called "cairo-2" was found`. `cairosvg`
+  installiert über `pip` sauber, lädt zur Laufzeit aber die native
+  `libcairo-2.dll` per `dlopen()`, die `pip` nicht mitbringt — kein
+  Konfigurationsfehler bei Flo, sondern eine strukturelle Schwäche der
+  ursprünglichen Bibliothekswahl. Behoben durch eine `Canvas`-Abstraktion in
+  `py/viz_utils.py`: dieselbe Diagrammgeometrie wird einmal gegen
+  `SVGCanvas` (String-Aufbau) und einmal gegen `PNGCanvas` (reines Pillow
+  `ImageDraw`, kein Umweg über SVG) ausgeführt, kein natives Rendering, kein
+  `cairosvg`. Nebenbefund dabei: Pillows eingebaute Schrift
+  (`ImageFont.load_default(size=...)`, ab Pillow 10.1) hat keine Glyphen für
+  „—" oder „→" (als leere Kästchen sichtbar im ersten Pillow-Render) — durch
+  ASCII-Ersatz (`-`, `->`) behoben. In einer komplett frischen venv (nur
+  `Pillow` aus `requirements.txt`) verifiziert (geprüft 2026-09-13).
 
 ### A2 Zielbild
 
@@ -97,7 +111,8 @@ Eigenschaften, die das fertige Repo erfüllen muss:
 | Szenario-1-Beispieldaten | `aat:300010439` –exactMatch→ `oeai-materials:concept23906` "clay"; `wnk:wk000147` "summerhouse" –relatedMatch→ `aat:300007698` | 2026-09-13 |
 | `amt:weight`-Werte in Szenario 1 | Illustrative Platzhalter (1.00 / 0.60), nicht aus der SSSOM-Quelle — explizit so gekennzeichnet in Datei-Header, README und Abbildung | 2026-09-13 |
 | Bildanzahl je Szenario | Vorschlag 2/3/2/2/2 (insgesamt 11) | Vorschlag, seit 2026-09-13 |
-| Bildformat | SVG + PNG (via `cairosvg`), analog `bb5kbc-visuals` | 2026-09-13 |
+| Bildformat | SVG + PNG, beide direkt aus derselben Geometrie über eine `Canvas`-Abstraktion (`SVGCanvas`/`PNGCanvas`) | 2026-09-13, korrigiert 2026-09-13 |
+| PNG-Rendering | Reines Pillow (`ImageDraw`, `ImageFont.load_default(size=...)`), **nicht** `cairosvg` | 2026-09-13 (Korrektur, s. Befund unten) |
 
 ### A5 Was in welchem Chat hochgeladen wird
 
@@ -125,8 +140,11 @@ kann mit, ist aber klein genug, dass es keine Rolle spielt).
   `py/viz_utils.py`, `README.md`, `LICENSE`, `CITATION.cff`,
   `requirements.txt`, `.gitignore`, `PRIMER.md`.
 - **Substanz**: `viz_utils.py` mit Florians sechs Farbschema-Kategorien plus
-  einer expliziten siebten Neutral-Kategorie für Nicht-RDF-Boxen; deterministischer
-  SVG→PNG-Export über `cairosvg`.
+  einer expliziten siebten Neutral-Kategorie für Nicht-RDF-Boxen; jede Figur
+  wird als `build(canvas)`-Funktion einmal definiert und deterministisch
+  gegen zwei Canvas-Backends ausgeführt (`SVGCanvas`, `PNGCanvas` via reinem
+  Pillow) — ursprünglich über `cairosvg`, nach dem Windows-Befund oben
+  umgebaut.
 - **Abnahme**: `python main.py --list` zeigt die Schritte; `python main.py`
   läuft ohne Fehler durch.
 

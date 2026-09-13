@@ -1,4 +1,11 @@
-# cairosvg rasterises the hand-built SVG figures to PNG (py/viz_utils.py).
-# No matplotlib/graphviz dependency - every diagram is plain SVG generated
-# directly by the scenario scripts.
-cairosvg>=2.7,<3
+# Pillow rasterises the hand-built figures directly to PNG (py/viz_utils.py,
+# PNGCanvas). No cairo/cairosvg, no reportlab: Pillow ships self-contained
+# wheels for every platform (including Windows) and its built-in scalable
+# font (ImageFont.load_default(size=...), added in 10.1) needs no external
+# font file either.
+#
+# An earlier version of this repository used cairosvg, which imports fine
+# via pip but dlopen()s a *native* Cairo library at runtime that pip does
+# not install - this broke on Windows with "no library called 'cairo-2' was
+# found" (2026-09-13). Pillow has no such external/native dependency.
+Pillow>=10.1
