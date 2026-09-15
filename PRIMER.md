@@ -13,7 +13,7 @@ Ende zurückgeschrieben. Teil A gilt immer, Teil B/C sind die Schritte
 | `LasseMempel/thesaurusscience` | Quelle der echten SSSOM-Mappings | extern, read-only Referenz |
 | `n4o-rse/amt-engine` | Fuzzy-Logic-RDF-Reasoning-Engine | extern, read-only Referenz |
 | `Research-Squirrel-Engineers/GSAS` | Gradual Semantic Alignment for SKOS | extern, read-only Referenz |
-| `florianthiery/thesaurusscience--amt--gsas-visuals` | dieses Repo | neu, S0–S6 erledigt (alle 6 Szenarien) |
+| `florianthiery/thesaurusscience--amt--gsas-visuals` | dieses Repo | neu, S0–S7 erledigt (alle 7 Szenarien) |
 
 **Befunde** (durch tatsächliches Klonen und Lesen der drei Quell-Repos
 geprüft, nicht aus dem Gedächtnis):
@@ -177,6 +177,43 @@ geprüft, nicht aus dem Gedächtnis):
   `narrowMatch` wird von keinem der vier GSAS-Modelle kalibriert — als
   begründete Analogie wird GSAS' `relatedMatch`-Degree (0.4947) verwendet,
   klar gekennzeichnet (geprüft 2026-09-13).
+- **Lasses "Neue Infos" (echte Embedding-Auswertung)**: `thesaurusscience`
+  um `Scripts/test_mapping_embeddings.py` + `Scripts/outputs/` erweitert
+  (gepullt, nicht aus dem Gedächtnis). Kernbefund aus
+  `sensitivity_auc_d.csv`: rohe Ø-Ähnlichkeit ist uninformativ (e5-Modell
+  gibt exactMatch, closeMatch UND Zufallspaaren hohe Werte), AUC-ROC/
+  Cohen's d gegen eine Zufallspaar-Nullhypothese zeigt das echte Bild:
+  e5-large-instruct AUC 0.89–0.95, m2v-bge-m3 AUC 0.77–0.83 (kaum besser
+  als String-Matching, AUC 0.77–0.84), Normalisierung hilft jeder Technik
+  (geprüft 2026-09-13).
+- **`Mappings/`-Ordner deutlich gewachsen**: jetzt 44 Dateien, ~399.374
+  Mapping-Zeilen (vorher deutlich weniger). In den zehn `*_aat.sssom.tsv`-
+  Dateien allein: 1.775 echte exactMatch-Zeilen in AAT hinein, 1.431
+  unterschiedliche Zielkonzepte, davon 227 von ≥2 verschiedenen
+  Quelldateien erreicht, 19 von ≥3. Keine direkte DAI↔INRAP/ADS-
+  Mapping-Datei existiert — echte, neue Schlussfolgerungen, keine bereits
+  gesagten Fakten (gezählt 2026-09-13).
+- **Szenario 7, drei echte Drei-Länder-Brücken gefunden**: `dai:Brücke`/
+  `pactols:pont`/`fish_tmt2:BRIDGE` → `aat:300007836`; ebenso für
+  Aquädukt/aqueduc/AQUEDUCT (`aat:300006165`) und Kaserne/caserne/BARRACKS
+  (`aat:300005665`) — drei von den 19 realen Drei-Wege-Brücken (geprüft
+  2026-09-13).
+- **Szenario 7, Kalibrierungsbeispiel real, aber ehrlich uneindeutig**:
+  reales closeMatch-Paar "petit appareil"/"brickwork (masonry)" — e5=0.805,
+  m2v=0.051 (verpasst es praktisch), Levenshtein=0.242 (alle echt, aus
+  Lasses CSVs). `random_pair_mean` für e5 nicht in Lasses Output enthalten
+  (nur im Skript berechnet) — hier aus seinen echten gecachten Embeddings
+  neu gezogen (gleiche Methode, `label_embeddings__e5-large-instruct__full.pkl`,
+  ~0.828), nicht bit-identisch mit einem konkreten Lauf seines Skripts,
+  aber echt berechnet. Befund: 0.805 liegt UNTER e5's eigenem
+  Zufallspaar-Mittelwert (0.828) — die kalibrierte Einordnung ("dubious")
+  ist damit eine ehrliche, nicht beschönigte Aussage, kein sauberes
+  Bestätigungsbeispiel (geprüft/berechnet 2026-09-13).
+- **bb-5kbc-visuals-Stilkonvention geprüft**: 7:4-Folienformat (1750×1000
+  px), bewusst KEIN Titel/Caption im Bild selbst ("these are
+  general-purpose diagram assets meant to be dropped into a slide... each
+  of which supplies its own caption") — für Szenario 7 übernommen, S1–S6
+  bleiben wie gebaut (geprüft 2026-09-13).
 
 ### A2 Zielbild
 
@@ -256,6 +293,10 @@ Eigenschaften, die das fertige Repo erfüllen muss:
 | Szenario-6-Operatoren je Arität | Aus `amt-engine`s Ontology-README übernommen: Gödel (n=2,3 Default), GeometricMean (n=4 Default) — nicht Einstein wie in Szenario 3 zu allgemein behauptet | 2026-09-13 |
 | Szenario-6-Bilder | 8 (3× Ketten-Diagramm im n-ary-Stil, Operator-nach-Arität, Product-Dämpfung [synthetisch], SKOS-Vorher/Nachher, binär-vs-n-är, GSAS-Abdeckungslücke) | 2026-09-13 |
 | Szenario-3-Korrektur | Headline-Operator von Einstein auf Gödel geändert (allgemeiner 3-är-Default laut `amt-engine`-Ontology-README); alle 5 Abbildungen + README neu | 2026-09-13 |
+| Szenario-7-Scope | Zwei getrennte Geschichten: A) reine exactMatch-Verkettung (Lasses Vorschlag, konservativ), B) Kalibrierung pro Technik — bewusst nicht vermischt | 2026-09-13 |
+| Szenario-7-Bildstil | Nur reine Modellierungs-Schemata, keine Balken-/Kurvendiagramme; Stil an `bb-5kbc-visuals` angelehnt (7:4-Format, kein Titel/Caption im Bild) | 2026-09-13 |
+| Szenario-7-Kalibrierungs-Vokabular | GSAS' 4-Level-Begriffe (dubious/low/medium/high) als Einordnung wiederverwendet, explizit NICHT als GSAS-Wert deklariert | 2026-09-13 |
+| Talk Notes | Ein Satz + ein Absatz pro Szenario (alle 7), in `scenario-07-.../TALK_NOTES.md` gesammelt statt pro Abbildung | 2026-09-13 |
 
 ### A5 Was in welchem Chat hochgeladen wird
 
@@ -275,6 +316,7 @@ kann mit, ist aber klein genug, dass es keine Rolle spielt).
 | S4 | Neuro-symbolischer Recommender (Ausblick) | erledigt 2026-09-13 |
 | S5 | Kleiner Test: Embedding-Distanzen direkt in AMT | erledigt 2026-09-13 |
 | S6 | Mehrstufige RoleChainAxioms mit GSAS über gemischte Property-Hierarchien | erledigt 2026-09-13 |
+| S7 | Exact-Match-Verkettung im großen Maßstab + Kalibrierung pro Technik (Lasses "Neue Infos") | erledigt 2026-09-13 |
 
 ## Teil C — Die Schritte
 
@@ -449,8 +491,39 @@ kann mit, ist aber klein genug, dass es keine Rolle spielt).
   bestätigt alle Kettengewichte und Operator-Werte.
 - **Hinweis**: wie S1–S5 ein erster Entwurf zur Vorlage an Lasse Mempel.
 
-Damit sind alle 6 bislang besprochenen Szenarien gebaut. Weiteres Vorgehen
-hängt von Lasses Feedback ab.
+### S7 — Exact-Match-Verkettung im großen Maßstab + Kalibrierung pro Technik (erledigt 2026-09-13)
+
+- **Ziel**: Lasses "Neue Infos"-Nachricht konkret umsetzen — echte
+  Embedding-Auswertungsergebnisse einbeziehen, Szenario 6 unangetastet
+  lassen, AMT-Modellierung "mit der Axiom-Darstellung" zeigen, die zeigt,
+  was Lasse für möglich hält. Auf expliziten Wunsch: nur reine
+  Modellierungs-Schemata, keine Balken-/Kurvendiagramme.
+- **Uploads/Daten**: `data/real_bridges.tsv` (drei echte
+  Drei-Länder-Brücken, s. A1); `data/example_calibration.tsv` (ein echtes
+  closeMatch-Paar mit echten Pro-Technik-Werten aus Lasses
+  `Scripts/outputs/`).
+- **Substanz**: sieben Abbildungen, im 7:4-Folienformat, bewusst OHNE
+  eingebackenen Titel/Caption (Stil an `bb-5kbc-visuals` angelehnt) —
+  1. `scenario-07-bridge-hub`: die Brücken-Kette als Hub-Schema (3 echte
+     Quellen, 1 echter AAT-Hub, abgeleitete Kanten als Dreieck).
+  2. `scenario-07-axiom-representation`: dieselbe Inferenz als
+     Axiom-Pipeline (`InverseAxiom` + `RoleChainAxiom`, reines exactMatch).
+  3. `scenario-07-pattern-repeats`: Aquädukt + Kaserne, gleiches Schema,
+     kompakter.
+  4. `scenario-07-calibration-pipeline`: Geschichte B als Pipeline, echte
+     Referenzpunkte als Text, kein Diagramm.
+  5. `scenario-07-multi-provenance`: dasselbe Paar, drei parallele
+     technik-spezifische Kanten mit echten Werten.
+  6. `scenario-07-safe-vs-candidate`: Geschichte A vs. B, Box-Kontrast.
+  7. `scenario-07-scope-boundary`: modelliert vs. Ausblick, ohne Zahlen.
+- **Zusätzlich**: `TALK_NOTES.md` — ein Satz + ein Absatz pro Szenario,
+  für alle 7 Szenarien (nicht nur S7), im S7-Ordner abgelegt.
+- **Abnahme**: `python main.py --only scenario-07` erzeugt alle sieben
+  Abbildungen; zweimaliger Lauf ist byte-identisch (`cmp`).
+- **Hinweis**: wie S1–S6 ein erster Entwurf zur Vorlage an Lasse Mempel.
+
+Damit sind alle 7 Szenarien gebaut. Weiteres Vorgehen hängt von Lasses
+Feedback ab.
 
 ## Teil D — Offene Punkte
 
@@ -473,11 +546,22 @@ hängt von Lasses Feedback ab.
 - GSAS deckt `broadMatch`/`narrowMatch` nicht ab (s. Szenario 6). Eine
   echte GSAS-Erweiterung dafür existiert nicht; Szenario 6 nutzt eine
   begründete Analogie statt eines Werts.
+- GSAS deckt auch keine Embedding-/String-Techniken ab (s. Szenario 7) —
+  die "dubious/low/medium/high"-Einordnung dort ist eine Wiederverwendung
+  des GSAS-Vokabulars, kein GSAS-Wert. Eine echte Pro-Technik-Kalibrierung
+  (analog zum Perceptions-Modell, aber empirisch aus Lasses Daten) ist
+  offen, s. Szenario 7 README "Sketch".
+- Story A und Story B aus Szenario 7 sind bewusst getrennt gehalten
+  (Lasses "Ähnlichkeit über Bande"-Frage) — ob kalibrierte Kandidaten-
+  Gewichte tatsächlich in dieselbe RoleChainAxiom-Maschinerie wie kuratierte
+  exactMatch-Kanten eingespeist werden können, ist offen, nicht getestet.
+- Die `sssom-js`-Konvertierung der `Mappings/`-TSVs nach RDF steht laut
+  Lasse noch aus — ohne sie bleibt jede AMT-Ausführung an echten Daten
+  (nicht nur Diagramme) hypothetisch.
 - Zenodo-DOI für dieses Repo noch nicht vergeben (`CITATION.cff` hat keinen
   `doi`-Eintrag).
-- Szenario 1, 2, 3, 4, 5 und 6 sind erste Entwürfe zur Vorlage an Lasse
-  Mempel — sobald er Feedback/Ideen dazu hat, ggf. Anpassungen an
-  Beispielen, Modellwahl oder Abbildungen nötig; noch nicht eingearbeitet.
-- Alle 5 ursprünglich besprochenen Szenarien sind jetzt gebaut. Nächster
-  Schritt hängt von Lasses Rückmeldung ab — ggf. Überarbeitung statt neuer
-  Szenarien.
+- Szenario 1–7 sind erste Entwürfe zur Vorlage an Lasse Mempel — sobald er
+  Feedback/Ideen dazu hat, ggf. Anpassungen an Beispielen, Modellwahl oder
+  Abbildungen nötig; noch nicht eingearbeitet.
+- Alle 7 bislang besprochenen Szenarien sind gebaut. Nächster Schritt hängt
+  von Lasses Rückmeldung ab — ggf. Überarbeitung statt neuer Szenarien.

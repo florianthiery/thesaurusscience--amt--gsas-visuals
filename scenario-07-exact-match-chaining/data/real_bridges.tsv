@@ -1,0 +1,13 @@
+#source: nine real, unchanged rows across three files in https://github.com/LasseMempel/thesaurusscience (CC BY 4.0), pulled 2026-09 (after Lasse's "Neue Infos" message added Scripts/ and grew Mappings/ to 44 files, ~399k rows): Mappings/dai_aat.sssom.tsv, Mappings/inrap_pactols_sujets_aat.sssom.tsv, Mappings/ads_eh_tmt2_aat.sssom.tsv.
+#comment: each triple is a real AAT concept independently exactMatch'd from three different national recording traditions (DAI/Germany, INRAP-Pactols/France, ADS Historic England/UK) that never reference each other directly - no dai<->inrap or dai<->ads mapping file exists in the corpus (checked). Weight = 1.0 for every row: GSAS's real minimal-model exactMatch degree, unchanged - these are curated SSSOM assertions, not raw similarity scores, so no calibration step applies here (contrast with example_calibration.tsv).
+#comment_2: found by counting real exactMatch rows into AAT across the ten *_aat.sssom.tsv files used in Lasse's own script: 1,775 rows, 1,431 distinct AAT targets, 227 targets reached from >=2 different source files, 19 from >=3 (these three triples are among those 19).
+bridge	subject_id	subject_label	source_file	object_id	object_label
+bridge	dai:_2751	Brücke	dai_aat.sssom.tsv	aat:300007836	bridges (built works)
+bridge	pactols:pcrttcSF6qn4l3	pont	inrap_pactols_sujets_aat.sssom.tsv	aat:300007836	bridges (built works)
+bridge	fish_tmt2:/concepts/70214	BRIDGE	ads_eh_tmt2_aat.sssom.tsv	aat:300007836	bridges (built works)
+aqueduct	dai:_2742	Aquädukt	dai_aat.sssom.tsv	aat:300006165	aqueducts
+aqueduct	pactols:pcrtQLzzeiDyrk	aqueduc	inrap_pactols_sujets_aat.sssom.tsv	aat:300006165	aqueducts
+aqueduct	fish_tmt2:/concepts/70432	AQUEDUCT	ads_eh_tmt2_aat.sssom.tsv	aat:300006165	aqueducts
+barracks	dai:_2767	Kaserne	dai_aat.sssom.tsv	aat:300005665	barracks
+barracks	pactols:pcrt2jYGlPYNTJ	caserne	inrap_pactols_sujets_aat.sssom.tsv	aat:300005665	barracks
+barracks	fish_tmt2:/concepts/68821	BARRACKS	ads_eh_tmt2_aat.sssom.tsv	aat:300005665	barracks

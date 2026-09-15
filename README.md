@@ -23,7 +23,9 @@ attributed excerpts from `thesaurusscience`.
 
 ## Status
 
-All five originally discussed scenarios are built (see `PRIMER.md`).
+All seven scenarios below are built (see `PRIMER.md`). Scenarios 1-6 were
+planned together; scenario 7 was added afterwards, following up on real
+results Lasse Mempel computed and shared (see its own README).
 
 | # | Scenario | Status |
 |---|---|---|
@@ -33,6 +35,7 @@ All five originally discussed scenarios are built (see `PRIMER.md`).
 | 04 | Neuro-symbolic recommender (outlook - embedding signal + AMT graph plausibility) | done |
 | 05 | Feeding raw embedding distances directly into AMT (operator ablation) | done |
 | 06 | Multi-step RoleChainAxioms with GSAS across mixed-property hierarchies | done |
+| 07 | Exact-match chaining at scale, with per-technique calibration | done |
 
 ## Repository structure
 
@@ -52,6 +55,9 @@ thesaurusscience--amt--gsas-visuals/
 ├── scenario-04-neurosymbolic-recommender/  (same layout as scenario-01)
 ├── scenario-05-embedding-feed-test/     (same layout as scenario-01)
 ├── scenario-06-chain-hierarchies/       (same layout as scenario-01)
+├── scenario-07-exact-match-chaining/    (same layout, but no baked-in
+│                                          titles/captions - see its README;
+│                                          also holds TALK_NOTES.md)
 ├── LICENSE
 ├── CITATION.cff
 ├── requirements.txt
@@ -148,6 +154,20 @@ does not calibrate hierarchical mapping properties at all. See that
 scenario's README for the full account, including a correction to an
 earlier, over-general claim about AMT's recommended operator for 3-step
 chains.
+
+`scenario-07-exact-match-chaining/data/real_bridges.tsv` holds nine real
+rows: three real Getty AAT concepts, each independently `exactMatch`'d from
+three different national recording traditions (Germany/DAI, France/INRAP-
+Pactols, UK/ADS) that never reference each other directly. Its
+`example_calibration.tsv` uses one real `closeMatch` pair with real
+per-technique similarity scores from Lasse Mempel's own newly-published
+`Scripts/outputs/` in `thesaurusscience` - see that scenario's README for
+exactly which numbers are copied unchanged and which one interpretive layer
+(a placement into GSAS's 4-Level vocabulary) is this repository's own
+addition, not a GSAS output. That scenario's figures also follow a
+different visual convention from scenarios 1-6 (no baked-in titles or
+captions) and come with a `TALK_NOTES.md` covering all seven scenarios, not
+only itself.
 
 ## AI usage
 
